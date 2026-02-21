@@ -1,0 +1,64 @@
+{
+  "name": "chainforgeledger",
+  "version": "1.0.0",
+  "description": "A complete blockchain platform library with PoW/PoS consensus, smart contracts, and DeFi applications",
+  "type": "module",
+  "main": "src/index.js",
+  "module": "src/index.js",
+  "bin": {
+    "chainforgeledger": "src/__main__.js"
+  },
+  "exports": {
+    ".": "./src/index.js",
+    "./core": "./src/core/index.js",
+    "./crypto": "./src/crypto/index.js",
+    "./consensus": "./src/consensus/index.js",
+    "./tokenomics": "./src/tokenomics/index.js",
+    "./smartcontracts": "./src/smartcontracts/index.js",
+    "./networking": "./src/networking/index.js",
+    "./storage": "./src/storage/index.js",
+    "./utils": "./src/utils/index.js",
+    "./governance": "./src/governance/index.js"
+  },
+  "scripts": {
+    "test": "node tests/demo.js",
+    "build": "npm run clean && mkdir -p dist && cp -r src/* dist/",
+    "demo": "node src/__main__.js",
+    "clean": "rm -rf dist",
+    "basic": "node src/__main__.js basic",
+    "pow": "node src/__main__.js pow",
+    "pos": "node src/__main__.js pos",
+    "token": "node src/__main__.js token"
+  },
+  "keywords": [
+    "blockchain",
+    "cryptocurrency",
+    "smart-contracts",
+    "defi",
+    "pow",
+    "pos",
+    "consensus",
+    "ledger",
+    "cryptography",
+    "wallet",
+    "tokenomics"
+  ],
+  "author": "Kanishk Kumar Singh",
+  "email": "kanishkkumar2004@gmail.com",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kanishkkumarsingh2004/ChainForgeLedger-NPM.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kanishkkumarsingh2004/ChainForgeLedger-NPM/issues"
+  },
+  "homepage": "https://github.com/kanishkkumarsingh2004/ChainForgeLedger-NPM#readme",
+  "devDependencies": {},
+  "dependencies": {
+    "winston": "^3.10.0"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
+}
