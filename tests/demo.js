@@ -41,7 +41,7 @@ async function testBlockchain() {
             receiver: `user${200 + i}`,
             amount: Math.random() * 100
         });
-        transactions.push(tx.toJSON());
+        transactions.push(tx);
         blockchain.addTransaction(tx);
     }
     console.log(`3. Added ${transactions.length} transactions to mempool`);
@@ -55,8 +55,11 @@ async function testBlockchain() {
     console.log(`4. Block ${minedBlock.index} mined successfully`);
 
     // Validate blockchain
-    const validationResult = blockchain.isChainValid();
+    const validationResult = blockchain.isValidChain();
     console.log(`5. Blockchain validation: ${validationResult.isValid ? '✅ Valid' : '❌ Invalid'}`);
+    if (!validationResult.isValid) {
+        console.log('Validation errors:', validationResult.errors);
+    }
 
     // Check block statistics
     console.log(`6. Total blocks in chain: ${blockchain.chain.length}`);
@@ -137,7 +140,7 @@ function testPoS() {
             receiver: `user${100 + i}`,
             amount: Math.random() * 100
         });
-        transactions.push(tx.toJSON());
+        transactions.push(tx);
     }
 
     // Forge block
@@ -233,7 +236,7 @@ async function runAllTests() {
 }
 
 // Run the tests if this file is executed directly
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (process.argv[1] && process.argv[1].includes('demo.js')) {
     runAllTests();
 }
 

@@ -4,12 +4,12 @@ A complete blockchain platform library built from scratch with pure JavaScript. 
 
 ## Features
 
-- **Multiple Consensus Mechanisms**: Support for Proof of Work (PoW), Proof of Stake (PoS), and validator-based consensus
-- **Smart Contract Execution**: Stack-based virtual machine with sandboxed execution and compiler support
-- **Decentralized Finance (DeFi)**: Built-in DEX, lending protocol, liquidity management, and stablecoin support
+- **Multiple Consensus Mechanisms**: Support for Proof of Work (PoW), Proof of Stake (PoS), and validator-based consensus with slashing mechanisms
+- **Smart Contract Execution**: Stack-based virtual machine with sandboxed execution and compiler support for ERC-20, ERC-721, and ERC-1155 standards
+- **Decentralized Finance (DeFi)**: Built-in DEX, lending protocol, liquidity management, and stablecoin support with reward distribution
 - **NFT Marketplace**: Digital asset creation, minting, and trading functionality with ERC-721 and ERC-1155 standards
 - **Blockchain Explorer**: Analytics and visualization tools for blockchain data
-- **Wallet System**: Multiple wallet types (CLI, web, mobile, multisig, hardware) with BIP-39 mnemonic support
+- **Wallet System**: Multiple wallet types (single, multisig) with BIP-39 mnemonic support
 - **Governance**: DAO framework with voting and proposal mechanisms
 - **Security Architecture**: Multiple protection mechanisms including sharding, state pruning, slashing, and sandboxing
 - **Tokenomics**: Comprehensive tokenomics system with vesting, staking, reward distribution, supply management, and treasury systems
@@ -17,6 +17,7 @@ A complete blockchain platform library built from scratch with pure JavaScript. 
 - **Caching Layer**: Performance optimizations through efficient caching mechanisms
 - **Advanced Storage**: LevelDB and database abstraction layer for efficient data management
 - **Networking**: Peer-to-peer network with mempool, protocol, and rate limiting
+- **API Server**: RESTful API server for interacting with the blockchain platform
 
 ## Installation
 
@@ -93,62 +94,52 @@ console.log('Wallet Address:', wallet.address);
 - `Transaction`: Transaction management
 - `MerkleTree`: Merkle tree implementation for data integrity
 - `State`: World state management
-- `Bridge`: Cross-chain bridge functionality
-- `Caching`: Performance optimization through caching
-- `DifficultyAdjustment`: Dynamic difficulty adjustment
-- `FeeDistribution`: Transaction fee distribution
+- `CrossChainBridge, BridgeNetwork`: Cross-chain bridge functionality
+- `BlockchainCache`: Performance optimization through caching
+- `DifficultyAdjuster`: Dynamic difficulty adjustment
+- `FeeDistributionSystem`: Transaction fee distribution
 - `ForkHandler`: Blockchain fork management
-- `Lending`: DeFi lending protocol
-- `Liquidity`: Liquidity pool management
+- `LendingProtocol`: DeFi lending protocol
+- `LiquidityPool, DEX`: Liquidity pool management and DEX functionality
 - `Serialization`: Data serialization for network transmission
-- `Sharding`: Scalability through sharding
-- `Staking`: Staking and validator management
+- `Shard, ShardingManager`: Scalability through sharding
+- `StakingManager`: Staking and validator management
 - `StatePruning`: Storage optimization through state pruning
 
 ### Consensus
 
 - `ProofOfWork`: PoW consensus mechanism with mining functionality
 - `ProofOfStake`: PoS consensus mechanism with validator management
-- `Validator`: Validator entity for PoS
-- `ValidatorManager`: Manages validators in PoS system
+- `Validator, ValidatorManager`: Validator entity and management for PoS
 - `ConsensusInterface`: Common interface for all consensus mechanisms
-- `Slashing`: Validator slashing mechanisms
+- `SlashingManager`: Validator slashing mechanisms
 
 ### Cryptography
 
-- `sha256_hash`: SHA-256 hashing function
-- `keccak256_hash`: Keccak-256 hashing function
-- `generate_keys`: Key pair generation
-- `KeyPair`: Key pair management
+- `sha256_hash, keccak256_hash`: Hashing functions
+- `generate_keys, KeyPair`: Key pair generation and management
 - `Signature`: Digital signature operations
 - `Wallet`: Wallet system with signing capabilities
 - `Mnemonic`: BIP-39 mnemonic generation and recovery
-- `Multisig`: Multisignature wallet functionality
+- `MultisigWallet, MultisigWalletFactory`: Multisignature wallet functionality
 
 ### Tokenomics
 
 - `Tokenomics`: Comprehensive tokenomics system
-- `Stablecoin`: Stablecoin management and stabilization
-- `TokenStandards`: ERC-20, ERC-721, and ERC-1155 token standards
-- `SupplyManager`: Token supply management and distribution
-- `TreasuryManager`: Treasury management and financial operations
-- Token distribution management
-- Staking and reward mechanisms
-- Vesting schedules
-- Supply control (mint/burn)
-- Stablecoin stabilization mechanisms
-- Token standard compliance
-- Treasury and reserve management
+- `Stablecoin, StablecoinRewardDistributor`: Stablecoin management and stabilization
+- `TokenStandards`: ERC-20, ERC-721, and ERC-1155 token standards with contract creation
+- `SupplyManager, TokenSupplyTracker`: Token supply management and distribution tracking
+- `TreasuryManager, TreasuryPolicy`: Treasury management and financial operations
 
 ### Governance
 
 - `DAO`: Decentralized Autonomous Organization framework
 - `Proposal`: Governance proposal management
-- `Voting`: Voting systems for proposals
+- `VotingSystem, Vote`: Voting systems for proposals
 
 ### Networking
 
-- `Mempool`: Transaction mempool management
+- `TransactionPool, TransactionPoolManager`: Transaction mempool management
 - `Node`: Network node implementation
 - `Peer`: Peer-to-peer network management
 - `Protocol`: Network communication protocols
@@ -156,59 +147,68 @@ console.log('Wallet Address:', wallet.address);
 
 ### Smart Contracts
 
-- `Compiler`: Smart contract compiler
-- `Executor`: Contract execution engine
-- `Sandbox`: Execution sandbox for security
-- `VM`: Virtual machine for contract execution
+- `SmartContractCompiler, ContractDeployer`: Smart contract compiler and deployment
+- `SmartContractExecutor`: Contract execution engine
+- `SmartContractSandbox`: Execution sandbox for security
+- `SmartContractVM`: Virtual machine for contract execution
 
 ### Storage
 
-- `Database`: Database abstraction layer
-- `LevelDB`: LevelDB storage implementation
-- `Models`: Data models for blockchain entities
+- `DatabaseManager`: Database abstraction layer
+- `LevelDBStorage`: LevelDB storage implementation
+- `BlockStorage, TransactionStorage, ContractStorage, AccountStorage, MetadataStorage, StorageManager`: Data models for blockchain entities
 
 ### Utils
 
-- `ConfigManager`: Configuration management
-- `Logger`: Comprehensive logging system
-- `crypto`: Cryptographic utility functions
+- `ConfigManager, createConfigManager, DEFAULT_CONFIG, CONFIG_SCHEMA, loadDefaultConfig`: Configuration management
+- `Logger, createLogger, createSystemLogger, createNetworkLogger, createTransactionLogger, createBlockLogger, createValidatorLogger, createContractLogger, createGovernanceLogger, createSecurityLogger, getLogger, setLogger, logger`: Comprehensive logging system
+- `crypto` module: Cryptographic utility functions including:
+  - Hashing: sha256, sha512, ripemd160, keccak256, sha1
+  - Randomization: randomBytes, randomNumber, randomHex
+  - Key generation: generateKeyPair, generateRSAKeyPair, generateECDSAKeyPair
+  - Encryption: aes256gcmEncrypt, aes256gcmDecrypt
+  - Signing: sign, verify, rsaSha256Sign, rsaSha256Verify, ecdsaSha256Sign, ecdsaSha256Verify
+  - Encoding: bufferToHex, hexToBuffer, bufferToBase64, base64ToBuffer, hexToBase64, base64ToHex
+  - Validators: isValidHex, isValidBase64, isValidUUID
+  - Other utilities: hmac, pbkdf2, scrypt, uuidv4, generateSalt
+
+### API
+
+- `APIServer, createAPIServer, createAPIServerInstance`: RESTful API server for interacting with the blockchain platform
 
 ## Advanced Features
 
 ### Smart Contracts
 
 ```javascript
-import { Compiler, Executor, Sandbox, VM } from 'chainforgeledger/smartcontracts';
+import { TokenStandards } from 'chainforgeledger/tokenomics';
 
-// Create a simple smart contract
-const contractCode = `
-// Simple token contract
-function mint(to, amount) {
-    balances[to] += amount;
-    totalSupply += amount;
-}
+// Create token standards instance
+const tokenStandards = new TokenStandards();
 
-function transfer(from, to, amount) {
-    if (balances[from] >= amount) {
-        balances[from] -= amount;
-        balances[to] += amount;
-        return true;
-    }
-    return false;
-}
-`;
+// Create ERC20 token contract
+tokenStandards.create_erc20_contract({
+    name: 'MyToken',
+    symbol: 'MTK',
+    total_supply: 1000000000,
+    decimals: 18
+});
 
-// Compile contract
-const compiler = new Compiler();
-const compiledContract = compiler.compile(contractCode);
+// Create ERC721 NFT contract
+tokenStandards.create_erc721_contract({
+    name: 'MyNFT',
+    symbol: 'MNFT'
+});
 
-// Create sandbox and VM
-const sandbox = new Sandbox();
-const vm = new VM(compiledContract, sandbox);
+// Create ERC1155 multi-token contract
+tokenStandards.create_erc1155_contract({
+    uri: 'https://api.example.com/tokens/{id}.json'
+});
 
-// Execute contract methods
-vm.call('mint', ['0x1234', 1000]);
-vm.call('transfer', ['0x1234', '0x5678', 500]);
+// Get contract interfaces
+const erc20Interface = tokenStandards.get_token_contract_interface('ERC20');
+const erc721Interface = tokenStandards.get_token_contract_interface('ERC721');
+const erc1155Interface = tokenStandards.get_token_contract_interface('ERC1155');
 ```
 
 ### Decentralized Exchange (DEX)
@@ -247,11 +247,11 @@ lending.repay('0x1234', 'DAI', 1050);
 ### Governance (DAO)
 
 ```javascript
-import { DAO, Proposal, Voting } from 'chainforgeledger/governance';
+import { DAO, Proposal, VotingSystem, Vote } from 'chainforgeledger/governance';
 
 // Create DAO and governance system
 const dao = new DAO();
-const voting = new Voting(dao);
+const voting = new VotingSystem(dao);
 
 // Create and submit proposal
 const proposal = new Proposal({
@@ -370,59 +370,64 @@ ChainForgeLedger follows a modular architecture with clear separation of concern
 
 ```
 ├── core/              # Blockchain core functionality
-│   ├── bridge.js       # Cross-chain bridge
-│   ├── caching.js      # Caching layer
-│   ├── difficulty.js   # Difficulty adjustment
+│   ├── block.js       # Block structure and validation
+│   ├── blockchain.js  # Main blockchain management
+│   ├── transaction.js # Transaction management
+│   ├── merkle.js      # Merkle tree implementation
+│   ├── state.js       # World state management
+│   ├── bridge.js      # Cross-chain bridge
+│   ├── caching.js     # Caching layer
+│   ├── difficulty.js  # Difficulty adjustment
 │   ├── fee_distribution.js # Fee distribution
-│   ├── fork.js         # Fork management
-│   ├── lending.js      # Lending protocol
-│   ├── liquidity.js    # Liquidity management
+│   ├── fork.js        # Fork management
+│   ├── lending.js     # Lending protocol
+│   ├── liquidity.js   # Liquidity management
 │   ├── serialization.js # Data serialization
-│   ├── sharding.js     # Sharding support
-│   ├── staking.js      # Staking system
+│   ├── sharding.js    # Sharding support
+│   ├── staking.js     # Staking system
 │   └── state_pruning.js # State pruning
 ├── consensus/         # Consensus mechanisms (PoW/PoS)
-│   ├── interface.js    # Consensus interface
-│   ├── pow.js          # Proof of Work
-│   ├── pos.js          # Proof of Stake
-│   ├── slashing.js     # Validator slashing
-│   └── validator.js    # Validator management
+│   ├── interface.js   # Consensus interface
+│   ├── pow.js         # Proof of Work
+│   ├── pos.js         # Proof of Stake
+│   ├── slashing.js    # Validator slashing
+│   └── validator.js   # Validator management
 ├── crypto/            # Cryptographic operations
-│   ├── hashing.js      # Hashing functions
-│   ├── keys.js         # Key management
-│   ├── signature.js    # Digital signatures
-│   ├── wallet.js       # Wallet system
-│   ├── mnemonic.js     # BIP-39 mnemonics
-│   └── multisig.js     # Multisignature wallets
+│   ├── hashing.js     # Hashing functions
+│   ├── keys.js        # Key management
+│   ├── signature.js   # Digital signatures
+│   ├── wallet.js      # Wallet system
+│   ├── mnemonic.js    # BIP-39 mnemonics
+│   └── multisig.js    # Multisignature wallets
 ├── governance/        # DAO and voting
-│   ├── dao.js          # Decentralized Autonomous Organization
-│   ├── proposal.js     # Governance proposals
-│   └── voting.js       # Voting systems
+│   ├── dao.js         # Decentralized Autonomous Organization
+│   ├── proposal.js    # Governance proposals
+│   └── voting.js      # Voting systems
 ├── networking/        # Peer-to-peer network
-│   ├── mempool.js      # Transaction mempool
-│   ├── node.js         # Network node
-│   ├── peer.js         # Peer management
-│   ├── protocol.js     # Communication protocols
+│   ├── mempool.js     # Transaction mempool
+│   ├── node.js        # Network node
+│   ├── peer.js        # Peer management
+│   ├── protocol.js    # Communication protocols
 │   └── rate_limiter.js # Rate limiting
 ├── smartcontracts/    # Smart contract execution
-│   ├── compiler.js     # Contract compiler
-│   ├── executor.js     # Contract execution
-│   ├── sandbox.js      # Execution sandbox
-│   └── vm.js           # Virtual machine
+│   ├── compiler.js    # Contract compiler
+│   ├── executor.js    # Contract execution
+│   ├── sandbox.js     # Execution sandbox
+│   └── vm.js          # Virtual machine
 ├── storage/           # Data storage
-│   ├── database.js     # Database interface
-│   ├── leveldb.js      # LevelDB implementation
-│   └── models.js       # Data models
+│   ├── database.js    # Database interface
+│   ├── leveldb.js     # LevelDB implementation
+│   └── models.js      # Data models
 ├── tokenomics/        # Token economics
-│   ├── tokenomics.js   # Core tokenomics
-│   ├── stablecoin.js   # Stablecoin management
-│   ├── standards.js    # Token standards (ERC-20, ERC-721, ERC-1155)
-│   ├── supply.js       # Supply management
-│   └── treasury.js     # Treasury management
+│   ├── tokenomics.js  # Core tokenomics
+│   ├── stablecoin.js  # Stablecoin management
+│   ├── standards.js   # Token standards (ERC-20, ERC-721, ERC-1155)
+│   ├── supply.js      # Supply management
+│   └── treasury.js    # Treasury management
 └── utils/             # Utility functions
-    ├── config.js       # Configuration management
-    ├── logger.js       # Logging system
-    └── crypto.js       # Cryptographic utilities
+    ├── config.js      # Configuration management
+    ├── logger.js      # Logging system
+    └── crypto.js      # Cryptographic utilities
 ```
 
 ## Testing
@@ -460,11 +465,11 @@ ChainForgeLedger is released under the [MIT License](./LICENSE).
 **Kanishk Kumar Singh**
 
 - Email: kanishkkumar2004@gmail.com
-- GitHub: [@yourusername](https://github.com/yourusername)
+- GitHub: [@kanishkkumarsingh2004](https://github.com/kanishkkumarsingh2004)
 
 ## Support
 
-If you encounter any issues or have questions, please open an issue on the [GitHub repository](https://github.com/yourusername/chainforgeledger/issues).
+If you encounter any issues or have questions, please open an issue on the [GitHub repository](https://github.com/kanishkkumarsingh2004/ChainForgeLedger-NPM/issues).
 
 ## Roadmap
 

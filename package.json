@@ -1,7 +1,6 @@
 {
   "name": "chainforgeledger",
   "version": "1.0.0",
-  "description": "A complete blockchain platform library with PoW/PoS consensus, smart contracts, and DeFi applications",
   "type": "module",
   "main": "src/index.js",
   "module": "src/index.js",
@@ -21,16 +20,7 @@
     "./governance": "./src/governance/index.js",
     "./api": "./src/api/index.js"
   },
-  "scripts": {
-    "test": "node tests/demo.js",
-    "build": "npm run clean && mkdir -p dist && cp -r src/* dist/",
-    "demo": "node src/__main__.js",
-    "clean": "rm -rf dist",
-    "basic": "node src/__main__.js basic",
-    "pow": "node src/__main__.js pow",
-    "pos": "node src/__main__.js pos",
-    "token": "node src/__main__.js token"
-  },
+  "scripts": {},
   "keywords": [
     "blockchain",
     "cryptocurrency",
@@ -42,24 +32,41 @@
     "ledger",
     "cryptography",
     "wallet",
-    "tokenomics"
+    "tokenomics",
+    "dex",
+    "nft",
+    "dao",
+    "lending",
+    "liquidity",
+    "staking"
   ],
   "author": "Kanishk Kumar Singh",
   "email": "kanishkkumar2004@gmail.com",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/kanishkkumarsingh2004/ChainForgeLedger-NPM.git"
+    "url": "git+https://github.com/kanishkkumarsingh2004/ChainForgeLedger-NPM.git"
   },
   "bugs": {
     "url": "https://github.com/kanishkkumarsingh2004/ChainForgeLedger-NPM/issues"
   },
   "homepage": "https://github.com/kanishkkumarsingh2004/ChainForgeLedger-NPM#readme",
-  "devDependencies": {},
   "dependencies": {
     "winston": "^3.10.0"
   },
   "devDependencies": {
     "jest": "^29.7.0"
-  }
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "files": [
+    "src/",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "description": "ChainForgeLedger is a comprehensive blockchain platform library built from scratch with pure JavaScript. It includes: \n- Proof of Work (PoW) and Proof of Stake (PoS) consensus mechanisms\n- Smart contract virtual machine with stack-based execution\n- Decentralized exchange (DEX) with automated market making (AMM)\n- Lending protocol with borrowing and lending functionality\n- NFT marketplace for digital asset creation and trading\n- Blockchain explorer for analytics and visualization\n- Wallet system with various types (CLI, web, mobile, multisig, hardware)\n- Governance system with DAO framework\n- Security architecture with multiple protection mechanisms\n- Tokenomics system with vesting, staking, and reward mechanisms\n- Cross-chain bridge functionality\n- Sharding support for scalability\n- State pruning for storage optimization\n- Caching layer for performance improvements"
 }

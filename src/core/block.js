@@ -15,11 +15,11 @@ export class Block {
         this.timestamp = options.timestamp || Date.now();
         this.transactions = options.transactions || [];
         this.previousHash = options.previousHash || '0'.repeat(64);
-        this.hash = options.hash || this.calculateHash();
         this.nonce = options.nonce || 0;
         this.validator = options.validator || null;
         this.difficulty = options.difficulty || 1;
         this.size = options.size || 0;
+        this.hash = options.hash || this.calculateHash();
     }
 
     /**
