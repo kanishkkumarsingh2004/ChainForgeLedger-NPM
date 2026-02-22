@@ -37,15 +37,15 @@ import { ForkHandler } from "./core/fork.js";
 import { LendingProtocol } from "./core/lending.js";
 import { LiquidityPool, DEX } from "./core/liquidity.js";
 import { Serialization } from "./core/serialization.js";
-import { Sharding } from "./core/sharding.js";
-import { Staking } from "./core/staking.js";
+import { Shard, ShardingManager } from "./core/sharding.js";
+import { StakingManager } from "./core/staking.js";
 import { StatePruning } from "./core/state_pruning.js";
 
 // Consensus mechanisms
 import { ProofOfWork } from "./consensus/pow.js";
 import { ProofOfStake, Validator, ValidatorManager } from "./consensus/pos.js";
 import { ConsensusInterface } from "./consensus/interface.js";
-import { Slashing } from "./consensus/slashing.js";
+import { SlashingManager } from "./consensus/slashing.js";
 
 // Cryptographic utilities
 import { sha256_hash, keccak256_hash } from "./crypto/hashing.js";
@@ -53,7 +53,7 @@ import { generate_keys, KeyPair } from "./crypto/keys.js";
 import { Signature } from "./crypto/signature.js";
 import { Wallet } from "./crypto/wallet.js";
 import { Mnemonic } from "./crypto/mnemonic.js";
-import { Multisig } from "./crypto/multisig.js";
+import { MultisigWallet, MultisigWalletFactory } from "./crypto/multisig.js";
 
 // Tokenomics
 import { Tokenomics } from "./tokenomics/index.js";
@@ -65,7 +65,7 @@ import { TreasuryManager, TreasuryPolicy } from "./tokenomics/treasury.js";
 // Governance
 import { DAO } from "./governance/dao.js";
 import { Proposal } from "./governance/proposal.js";
-import { Voting } from "./governance/voting.js";
+import { VotingSystem, Vote } from "./governance/voting.js";
 
 // Networking
 import { TransactionPool, TransactionPoolManager } from "./networking/mempool.js";
@@ -77,13 +77,16 @@ import { RateLimiter } from "./networking/rate_limiter.js";
 // Smart contracts
 import { SmartContractCompiler, ContractDeployer } from "./smartcontracts/compiler.js";
 import { SmartContractExecutor } from "./smartcontracts/executor.js";
-import { Sandbox } from "./smartcontracts/sandbox.js";
-import { VM } from "./smartcontracts/vm.js";
+import { SmartContractSandbox } from "./smartcontracts/sandbox.js";
+import { SmartContractVM } from "./smartcontracts/vm.js";
 
 // Storage
 import { DatabaseManager } from "./storage/database.js";
 import { LevelDBStorage } from "./storage/leveldb.js";
 import { BlockStorage, TransactionStorage, ContractStorage, AccountStorage, MetadataStorage, StorageManager } from "./storage/models.js";
+
+// API
+import { APIServer, createAPIServer, createAPIServerInstance } from "./api/index.js";
 
 // Utils
 import { ConfigManager, createConfigManager, DEFAULT_CONFIG, CONFIG_SCHEMA, loadDefaultConfig } from "./utils/config.js";
@@ -158,8 +161,8 @@ export { ForkHandler };
 export { LendingProtocol };
 export { LiquidityPool, DEX };
 export { Serialization };
-export { Sharding };
-export { Staking };
+export { Shard, ShardingManager };
+export { StakingManager };
 export { StatePruning };
 
 // Consensus mechanisms
@@ -167,7 +170,7 @@ export { ProofOfWork };
 export { ProofOfStake };
 export { Validator, ValidatorManager };
 export { ConsensusInterface };
-export { Slashing };
+export { SlashingManager };
 
 // Cryptographic utilities
 export { sha256_hash, keccak256_hash };
@@ -175,7 +178,7 @@ export { generate_keys, KeyPair };
 export { Signature };
 export { Wallet };
 export { Mnemonic };
-export { Multisig };
+export { MultisigWallet, MultisigWalletFactory };
 
 // Tokenomics
 export { Tokenomics };
@@ -187,7 +190,7 @@ export { TreasuryManager, TreasuryPolicy };
 // Governance
 export { DAO };
 export { Proposal };
-export { Voting };
+export { VotingSystem, Vote };
 
 // Networking
 export { TransactionPool, TransactionPoolManager };
@@ -199,8 +202,8 @@ export { RateLimiter };
 // Smart contracts
 export { SmartContractCompiler, ContractDeployer };
 export { SmartContractExecutor };
-export { Sandbox };
-export { VM };
+export { SmartContractSandbox };
+export { SmartContractVM };
 
 // Storage
 export { DatabaseManager };
@@ -261,6 +264,9 @@ export {
     logger
 };
 
+// API
+export { APIServer, createAPIServer, createAPIServerInstance };
+
 export { version, author, email, description };
 
 export default {
@@ -268,6 +274,10 @@ export default {
     author,
     email,
     description,
+    // API
+    APIServer: APIServer,
+    createAPIServer: createAPIServer,
+    createAPIServerInstance: createAPIServerInstance,
     // Core
     Block: Block,
     Blockchain: Blockchain,
@@ -284,8 +294,9 @@ export default {
     LiquidityPool: LiquidityPool,
     DEX: DEX,
     Serialization: Serialization,
-    Sharding: Sharding,
-    Staking: Staking,
+    Shard: Shard,
+    ShardingManager: ShardingManager,
+    StakingManager: StakingManager,
     StatePruning: StatePruning,
     // Consensus
     ProofOfWork: ProofOfWork,
@@ -293,7 +304,7 @@ export default {
     Validator: Validator,
     ValidatorManager: ValidatorManager,
     ConsensusInterface: ConsensusInterface,
-    Slashing: Slashing,
+    SlashingManager: SlashingManager,
     // Crypto & Wallet
     sha256_hash: sha256_hash,
     keccak256_hash: keccak256_hash,
@@ -302,7 +313,8 @@ export default {
     Signature: Signature,
     Wallet: Wallet,
     Mnemonic: Mnemonic,
-    Multisig: Multisig,
+    MultisigWallet: MultisigWallet,
+    MultisigWalletFactory: MultisigWalletFactory,
     // Tokenomics
     Tokenomics: Tokenomics,
     Stablecoin: Stablecoin,
@@ -315,7 +327,8 @@ export default {
     // Governance
     DAO: DAO,
     Proposal: Proposal,
-    Voting: Voting,
+    VotingSystem: VotingSystem,
+    Vote: Vote,
     // Networking
     TransactionPool: TransactionPool,
     TransactionPoolManager: TransactionPoolManager,
@@ -327,12 +340,17 @@ export default {
     SmartContractCompiler: SmartContractCompiler,
     ContractDeployer: ContractDeployer,
     SmartContractExecutor: SmartContractExecutor,
-    Sandbox: Sandbox,
-    VM: VM,
+    SmartContractSandbox: SmartContractSandbox,
+    SmartContractVM: SmartContractVM,
     // Storage
     DatabaseManager: DatabaseManager,
     LevelDBStorage: LevelDBStorage,
-    Models: Models,
+    BlockStorage: BlockStorage,
+    TransactionStorage: TransactionStorage,
+    ContractStorage: ContractStorage,
+    AccountStorage: AccountStorage,
+    MetadataStorage: MetadataStorage,
+    StorageManager: StorageManager,
     // Utils
     ConfigManager: ConfigManager,
     createConfigManager: createConfigManager,

@@ -18,7 +18,8 @@
     "./networking": "./src/networking/index.js",
     "./storage": "./src/storage/index.js",
     "./utils": "./src/utils/index.js",
-    "./governance": "./src/governance/index.js"
+    "./governance": "./src/governance/index.js",
+    "./api": "./src/api/index.js"
   },
   "scripts": {
     "test": "node tests/demo.js",
