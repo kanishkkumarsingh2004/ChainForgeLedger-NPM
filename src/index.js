@@ -32,20 +32,27 @@ import { State } from "./core/state.js";
 import { CrossChainBridge, BridgeNetwork } from "./core/bridge.js";
 import { BlockchainCache } from "./core/caching.js";
 import { DifficultyAdjuster } from "./core/difficulty.js";
-import { FeeDistributionSystem } from "./core/fee_distribution.js";
 import { ForkHandler } from "./core/fork.js";
-import { LendingProtocol } from "./core/lending.js";
-import { LiquidityPool, DEX } from "./core/liquidity.js";
 import { Serialization } from "./core/serialization.js";
-import { Shard, ShardingManager } from "./core/sharding.js";
-import { StakingManager } from "./core/staking.js";
-import { StatePruning } from "./core/state_pruning.js";
+
+// Runtime modules
+import { GasEngine, GasPriceOracle, GasLimitCalculator } from "./runtime/gas.js";
+import { EventSystem, EventDispatcher } from "./runtime/events.js";
+import { StateMachine, InMemoryStateBackend, FileStateBackend, DatabaseStateBackend, StateTransitionSystem, StateValidator } from "./runtime/state_machine.js";
+import { PluginSystem, Plugin, PluginEventManager } from "./runtime/plugins.js";
+import { FeeDistributionSystem } from "./runtime/fee_distribution.js";
+import { LendingProtocol } from "./runtime/lending.js";
+import { LiquidityPool, DEX } from "./runtime/liquidity.js";
+import { Shard, ShardingManager } from "./runtime/sharding.js";
+import { StakingManager } from "./runtime/staking.js";
+import { StatePruning } from "./runtime/state_pruning.js";
 
 // Consensus mechanisms
 import { ProofOfWork } from "./consensus/pow.js";
 import { ProofOfStake, Validator, ValidatorManager } from "./consensus/pos.js";
 import { ConsensusInterface } from "./consensus/interface.js";
 import { SlashingManager } from "./consensus/slashing.js";
+import { FinalityManager, PBFTFinalitySystem, CasperFFG } from "./consensus/finality.js";
 
 // Cryptographic utilities
 import { sha256_hash, keccak256_hash } from "./crypto/hashing.js";
@@ -61,6 +68,8 @@ import { Stablecoin, StablecoinRewardDistributor } from "./tokenomics/stablecoin
 import { TokenStandards } from "./tokenomics/standards.js";
 import { SupplyManager, TokenSupplyTracker } from "./tokenomics/supply.js";
 import { TreasuryManager, TreasuryPolicy } from "./tokenomics/treasury.js";
+
+
 
 // Governance
 import { DAO } from "./governance/dao.js";
@@ -164,6 +173,10 @@ export { Serialization };
 export { Shard, ShardingManager };
 export { StakingManager };
 export { StatePruning };
+export { GasEngine, GasPriceOracle, GasLimitCalculator };
+export { EventSystem, EventDispatcher };
+export { StateMachine, InMemoryStateBackend, FileStateBackend, DatabaseStateBackend, StateTransitionSystem, StateValidator };
+export { PluginSystem, Plugin, PluginEventManager };
 
 // Consensus mechanisms
 export { ProofOfWork };
@@ -171,6 +184,7 @@ export { ProofOfStake };
 export { Validator, ValidatorManager };
 export { ConsensusInterface };
 export { SlashingManager };
+export { FinalityManager, PBFTFinalitySystem, CasperFFG };
 
 // Cryptographic utilities
 export { sha256_hash, keccak256_hash };
@@ -186,6 +200,8 @@ export { Stablecoin, StablecoinRewardDistributor };
 export { TokenStandards };
 export { SupplyManager, TokenSupplyTracker };
 export { TreasuryManager, TreasuryPolicy };
+
+
 
 // Governance
 export { DAO };
@@ -324,6 +340,8 @@ export default {
     TokenSupplyTracker: TokenSupplyTracker,
     TreasuryManager: TreasuryManager,
     TreasuryPolicy: TreasuryPolicy,
+    // NFTs
+
     // Governance
     DAO: DAO,
     Proposal: Proposal,

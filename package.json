@@ -10,6 +10,7 @@
   "exports": {
     ".": "./src/index.js",
     "./core": "./src/core/index.js",
+    "./runtime": "./src/runtime/index.js",
     "./crypto": "./src/crypto/index.js",
     "./consensus": "./src/consensus/index.js",
     "./tokenomics": "./src/tokenomics/index.js",

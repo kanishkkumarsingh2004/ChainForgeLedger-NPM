@@ -1,492 +1,474 @@
-# ChainForgeLedger
+# ChainForgeLedger - Research-Level Modular Blockchain Framework
 
-A complete blockchain platform library built from scratch with pure JavaScript. ChainForgeLedger provides a comprehensive set of tools and modules for building decentralized applications, including support for multiple consensus mechanisms, smart contracts, DeFi protocols, and more.
+ChainForgeLedger has been upgraded from an educational blockchain engine to a **research-level modular blockchain framework** with comprehensive support for:
 
-## Features
+## 🔥 New Features
 
-- **Multiple Consensus Mechanisms**: Support for Proof of Work (PoW), Proof of Stake (PoS), and validator-based consensus with slashing mechanisms
-- **Smart Contract Execution**: Stack-based virtual machine with sandboxed execution and compiler support for ERC-20, ERC-721, and ERC-1155 standards
-- **Decentralized Finance (DeFi)**: Built-in DEX, lending protocol, liquidity management, and stablecoin support with reward distribution
-- **NFT Marketplace**: Digital asset creation, minting, and trading functionality with ERC-721 and ERC-1155 standards
-- **Blockchain Explorer**: Analytics and visualization tools for blockchain data
-- **Wallet System**: Multiple wallet types (single, multisig) with BIP-39 mnemonic support
-- **Governance**: DAO framework with voting and proposal mechanisms
-- **Security Architecture**: Multiple protection mechanisms including sharding, state pruning, slashing, and sandboxing
-- **Tokenomics**: Comprehensive tokenomics system with vesting, staking, reward distribution, supply management, and treasury systems
-- **Cross-Chain Bridge**: Interoperability between different blockchain networks
-- **Caching Layer**: Performance optimizations through efficient caching mechanisms
-- **Advanced Storage**: LevelDB and database abstraction layer for efficient data management
-- **Networking**: Peer-to-peer network with mempool, protocol, and rate limiting
-- **API Server**: RESTful API server for interacting with the blockchain platform
+### 1. Gas Engine
+- **Dynamic gas pricing** based on network congestion
+- **Gas metering and accounting** with detailed cost calculations
+- **Block and transaction gas limits** with automatic adjustment
+- **Gas refund mechanism** for storage cleanup
+- **Gas price oracle** for real-time price recommendations
+- **Extensible gas models** supporting custom operations and costs
 
-## Installation
+### 2. Event System
+- **Event bus architecture** with multiple event types (blocks, transactions, contracts, network)
+- **Event filtering and subscription** with wildcard support
+- **Event replay functionality** with historical event access
+- **Event validation and schema checking**
+- **Async event processing** for performance optimization
+- **Plugin system integration** for modular event handlers
 
+### 3. State Machine Separation
+- **Complete state machine separation** from core blockchain logic
+- **State transition system** with atomic operations
+- **State versioning and history tracking** with snapshot functionality
+- **State validation and integrity checks**
+- **Pluggable state backends** (in-memory, file, database)
+- **State synchronization and pruning**
+- **Garbage collection** for old state versions
+
+### 4. Finality Logic
+- **Multiple finality mechanisms**:
+  - PBFT-style three-phase commit
+  - Casper FFG (Friendly Finality Gadget)
+  - LMD-GHOST (Latest Message Driven GHOST)
+  - GHOST (Greediest Heaviest Observed Subtree)
+- **Checkpoint-based finality** with configurable intervals
+- **Fork choice rules** for chain selection
+- **Validator voting** and quorum requirements
+- **Slashing conditions** for finality violations
+
+### 5. Modular Plugin Architecture
+- **Dynamic plugin loading/unloading** with dependency resolution
+- **Plugin lifecycle management** (initialize, start, stop, destroy)
+- **Plugin sandboxing and security** with resource limits
+- **Plugin communication and messaging**
+- **Plugin registry and discovery**
+- **Category-based plugin organization**
+- **Built-in core plugins** for essential functionality
+
+## 🚀 Getting Started
+
+### Installation
 ```bash
 npm install chainforgeledger
 ```
 
-## Quick Start
-
-### Using the CLI
-
-ChainForgeLedger provides a command-line interface for quick access to core functionality:
-
-```bash
-# Run comprehensive platform demonstration
-chainforgeledger demo
-
-# Run basic blockchain operations
-chainforgeledger basic
-
-# Proof of Work operations
-chainforgeledger pow --mine --difficulty 3
-
-# Proof of Stake operations
-chainforgeledger pos --forge
-
-# Tokenomics operations
-chainforgeledger token --create --supply 1000000000
-
-# Show version information
-chainforgeledger version
-```
-
-### Using as a Library
+### Basic Usage
 
 ```javascript
-import { Blockchain, Transaction, ProofOfWork, Tokenomics, Wallet } from 'chainforgeledger';
+import {
+    GasEngine,
+    EventSystem,
+    StateMachine,
+    PluginSystem,
+    FinalityManager
+} from 'chainforgeledger';
 
-// Create a blockchain with PoW consensus
-const blockchain = new Blockchain();
-const powConsensus = new ProofOfWork(blockchain, { difficulty: 2 });
-
-// Create and add transactions
-const transaction = new Transaction({
-    sender: 'user1',
-    receiver: 'user2',
-    amount: 100
-});
-blockchain.addTransaction(transaction);
-
-// Mine a new block
-const block = powConsensus.mineBlock(blockchain.getMempool(), 'miner1');
-blockchain.addBlock(block);
-
-// Verify blockchain validity
-const isValid = blockchain.isChainValid();
-console.log('Blockchain valid:', isValid.isValid);
-
-// Create tokenomics system
-const tokenomics = new Tokenomics({ totalSupply: 1000000000 });
-console.log('Total Supply:', tokenomics.totalSupply);
-
-// Create wallet
-const wallet = new Wallet();
-console.log('Wallet Address:', wallet.address);
-```
-
-## Core Modules
-
-### Blockchain
-
-- `Blockchain`: Main blockchain class for managing the chain
-- `Block`: Individual block structure
-- `Transaction`: Transaction management
-- `MerkleTree`: Merkle tree implementation for data integrity
-- `State`: World state management
-- `CrossChainBridge, BridgeNetwork`: Cross-chain bridge functionality
-- `BlockchainCache`: Performance optimization through caching
-- `DifficultyAdjuster`: Dynamic difficulty adjustment
-- `FeeDistributionSystem`: Transaction fee distribution
-- `ForkHandler`: Blockchain fork management
-- `LendingProtocol`: DeFi lending protocol
-- `LiquidityPool, DEX`: Liquidity pool management and DEX functionality
-- `Serialization`: Data serialization for network transmission
-- `Shard, ShardingManager`: Scalability through sharding
-- `StakingManager`: Staking and validator management
-- `StatePruning`: Storage optimization through state pruning
-
-### Consensus
-
-- `ProofOfWork`: PoW consensus mechanism with mining functionality
-- `ProofOfStake`: PoS consensus mechanism with validator management
-- `Validator, ValidatorManager`: Validator entity and management for PoS
-- `ConsensusInterface`: Common interface for all consensus mechanisms
-- `SlashingManager`: Validator slashing mechanisms
-
-### Cryptography
-
-- `sha256_hash, keccak256_hash`: Hashing functions
-- `generate_keys, KeyPair`: Key pair generation and management
-- `Signature`: Digital signature operations
-- `Wallet`: Wallet system with signing capabilities
-- `Mnemonic`: BIP-39 mnemonic generation and recovery
-- `MultisigWallet, MultisigWalletFactory`: Multisignature wallet functionality
-
-### Tokenomics
-
-- `Tokenomics`: Comprehensive tokenomics system
-- `Stablecoin, StablecoinRewardDistributor`: Stablecoin management and stabilization
-- `TokenStandards`: ERC-20, ERC-721, and ERC-1155 token standards with contract creation
-- `SupplyManager, TokenSupplyTracker`: Token supply management and distribution tracking
-- `TreasuryManager, TreasuryPolicy`: Treasury management and financial operations
-
-### Governance
-
-- `DAO`: Decentralized Autonomous Organization framework
-- `Proposal`: Governance proposal management
-- `VotingSystem, Vote`: Voting systems for proposals
-
-### Networking
-
-- `TransactionPool, TransactionPoolManager`: Transaction mempool management
-- `Node`: Network node implementation
-- `Peer`: Peer-to-peer network management
-- `Protocol`: Network communication protocols
-- `RateLimiter`: Network traffic rate limiting
-
-### Smart Contracts
-
-- `SmartContractCompiler, ContractDeployer`: Smart contract compiler and deployment
-- `SmartContractExecutor`: Contract execution engine
-- `SmartContractSandbox`: Execution sandbox for security
-- `SmartContractVM`: Virtual machine for contract execution
-
-### Storage
-
-- `DatabaseManager`: Database abstraction layer
-- `LevelDBStorage`: LevelDB storage implementation
-- `BlockStorage, TransactionStorage, ContractStorage, AccountStorage, MetadataStorage, StorageManager`: Data models for blockchain entities
-
-### Utils
-
-- `ConfigManager, createConfigManager, DEFAULT_CONFIG, CONFIG_SCHEMA, loadDefaultConfig`: Configuration management
-- `Logger, createLogger, createSystemLogger, createNetworkLogger, createTransactionLogger, createBlockLogger, createValidatorLogger, createContractLogger, createGovernanceLogger, createSecurityLogger, getLogger, setLogger, logger`: Comprehensive logging system
-- `crypto` module: Cryptographic utility functions including:
-  - Hashing: sha256, sha512, ripemd160, keccak256, sha1
-  - Randomization: randomBytes, randomNumber, randomHex
-  - Key generation: generateKeyPair, generateRSAKeyPair, generateECDSAKeyPair
-  - Encryption: aes256gcmEncrypt, aes256gcmDecrypt
-  - Signing: sign, verify, rsaSha256Sign, rsaSha256Verify, ecdsaSha256Sign, ecdsaSha256Verify
-  - Encoding: bufferToHex, hexToBuffer, bufferToBase64, base64ToBuffer, hexToBase64, base64ToHex
-  - Validators: isValidHex, isValidBase64, isValidUUID
-  - Other utilities: hmac, pbkdf2, scrypt, uuidv4, generateSalt
-
-### API
-
-- `APIServer, createAPIServer, createAPIServerInstance`: RESTful API server for interacting with the blockchain platform
-
-## Advanced Features
-
-### Smart Contracts
-
-```javascript
-import { TokenStandards } from 'chainforgeledger/tokenomics';
-
-// Create token standards instance
-const tokenStandards = new TokenStandards();
-
-// Create ERC20 token contract
-tokenStandards.create_erc20_contract({
-    name: 'MyToken',
-    symbol: 'MTK',
-    total_supply: 1000000000,
-    decimals: 18
+// Initialize framework components
+const gasEngine = new GasEngine();
+const eventSystem = new EventSystem();
+const stateMachine = new StateMachine();
+const finalityManager = new FinalityManager();
+const pluginSystem = new PluginSystem({
+    eventSystem,
+    stateMachine,
+    gasEngine,
+    finalityManager
 });
 
-// Create ERC721 NFT contract
-tokenStandards.create_erc721_contract({
-    name: 'MyNFT',
-    symbol: 'MNFT'
-});
-
-// Create ERC1155 multi-token contract
-tokenStandards.create_erc1155_contract({
-    uri: 'https://api.example.com/tokens/{id}.json'
-});
-
-// Get contract interfaces
-const erc20Interface = tokenStandards.get_token_contract_interface('ERC20');
-const erc721Interface = tokenStandards.get_token_contract_interface('ERC721');
-const erc1155Interface = tokenStandards.get_token_contract_interface('ERC1155');
-```
-
-### Decentralized Exchange (DEX)
-
-```javascript
-import { DEX, LiquidityPool } from 'chainforgeledger/core/liquidity';
-
-// Create DEX and liquidity pool
-const dex = new DEX();
-const pool = new LiquidityPool('TOKEN1', 'TOKEN2', 1000000, 500000);
-dex.addLiquidityPool(pool);
-
-// Perform swap
-const swapResult = dex.swap('TOKEN1', 'TOKEN2', 1000);
-console.log('Swap result:', swapResult);
-```
-
-### Lending Protocol
-
-```javascript
-import { LendingProtocol } from 'chainforgeledger/core/lending';
-
-const lending = new LendingProtocol();
-
-// Deposit collateral
-lending.deposit('0x1234', 'ETH', 10);
-
-// Borrow tokens
-const borrowResult = lending.borrow('0x1234', 'DAI', 1000);
-console.log('Borrow result:', borrowResult);
-
-// Repay loan
-lending.repay('0x1234', 'DAI', 1050);
-```
-
-### Governance (DAO)
-
-```javascript
-import { DAO, Proposal, VotingSystem, Vote } from 'chainforgeledger/governance';
-
-// Create DAO and governance system
-const dao = new DAO();
-const voting = new VotingSystem(dao);
-
-// Create and submit proposal
-const proposal = new Proposal({
-    id: '1',
-    title: 'Increase block size',
-    description: 'Increase block size from 1MB to 2MB',
-    author: '0x1234',
-    createdAt: Date.now()
-});
-
-dao.submitProposal(proposal);
-
-// Vote on proposal
-voting.vote('0x1234', '1', 'yes');
-voting.vote('0x5678', '1', 'no');
-```
-
-### Stablecoin Management
-
-```javascript
-import { Stablecoin, StablecoinRewardDistributor } from 'chainforgeledger/tokenomics/stablecoin';
-
-// Create stablecoin instance
-const stablecoin = new Stablecoin({
-    token_name: 'ChainForge USD',
-    token_symbol: 'CFLUSD',
-    total_supply: 1000000
-});
-
-// Create reward distributor
-const distributor = new StablecoinRewardDistributor(stablecoin);
-
-// Distribute rewards to liquidity providers
-distributor.distribute_liquidity_pool_reward(10000, [
-    { address: '0x1234', share: 0.6 },
-    { address: '0x5678', share: 0.4 }
+// Initialize all components
+await Promise.all([
+    stateMachine.initialize(),
+    pluginSystem.initialize(),
+    finalityManager.initialize()
 ]);
 
-// Calculate peg deviation
-const deviation = stablecoin.calculate_peg_deviation(0.98, 1.00);
-console.log('Peg deviation:', deviation);
+console.log('ChainForgeLedger framework initialized!');
 ```
 
-### Token Supply Management
+### Example: Using the Gas Engine
 
 ```javascript
-import { SupplyManager, TokenSupplyTracker } from 'chainforgeledger/tokenomics/supply';
+import { GasEngine, GasPriceOracle } from 'chainforgeledger';
 
-// Create supply manager with lockup periods
-const supplyManager = new SupplyManager({
-    max_supply: 1000000000,
-    annual_inflation_rate: 0.05,
-    initial_distribution: {
-        core_team: 0.2,
-        foundation: 0.15,
-        community: 0.35,
-        operational: 0.1,
-        marketing: 0.1,
-        liquidity_pool: 0.1
-    },
-    distribution_lockups: {
-        core_team: { start_block: 1000, end_block: 10000 },
-        foundation: { start_block: 2000, end_block: 15000 }
-    }
-});
+const gasEngine = new GasEngine();
+const oracle = new GasPriceOracle();
 
-// Track supply changes
-const tracker = new TokenSupplyTracker(supplyManager);
-tracker.track_supply(0, 1000000000);
-tracker.track_supply(5000, 1025000000);
+// Calculate gas prices based on congestion
+const lowCongestionPrice = gasEngine.calculateDynamicGasPrice(0.1);
+const highCongestionPrice = gasEngine.calculateDynamicGasPrice(0.9);
 
-// Calculate token distribution
-const distribution = supplyManager.calculate_token_distribution(1000000000);
-console.log('Token distribution:', distribution);
+console.log(`Low congestion: ${lowCongestionPrice} wei`);
+console.log(`High congestion: ${highCongestionPrice} wei`);
+
+// Start transaction tracking
+gasEngine.startTransaction('tx1', 21000, 1000000000);
+gasEngine.trackGasUsage('tx1', 'transaction', 21000);
+
+const cost = gasEngine.calculateTransactionCost('tx1');
+console.log(`Transaction cost: ${cost} wei`);
 ```
 
-### Treasury Management
+### Example: Using the Event System
 
 ```javascript
-import { TreasuryManager, TreasuryPolicy } from 'chainforgeledger/tokenomics/treasury';
+import { EventSystem } from 'chainforgeledger';
 
-// Create treasury manager
-const treasury = new TreasuryManager({
-    treasury_address: '0x1234567890abcdef',
-    balance: {
-        native: 100000,
-        stablecoins: 500000,
-        other_tokens: 250000
-    },
-    expenses: {
-        development: 50000,
-        operational: 30000,
-        marketing: 20000
-    },
-    income: {
-        fees: 80000,
-        staking_rewards: 20000
-    }
+const eventSystem = new EventSystem();
+
+// Register custom event type
+eventSystem.registerEventType('contract.created', {
+    contractAddress: 'string',
+    creator: 'string',
+    bytecode: 'string'
 });
 
-// Create treasury policy
-const policy = new TreasuryPolicy(treasury);
+// Subscribe to events
+eventSystem.subscribe('contract.created', (event) => {
+    console.log('Contract created:', event.data.contractAddress);
+});
 
-// Check policy compliance
-const compliance = policy.check_policy_compliance();
-console.log('Policy compliance:', compliance);
-
-// Calculate financial health metrics
-const financialHealth = treasury.calculate_financial_health();
-console.log('Financial health:', financialHealth);
+// Publish event
+eventSystem.publish('contract.created', {
+    contractAddress: '0x1234',
+    creator: '0x5678',
+    bytecode: '0xabc123...'
+});
 ```
 
-## Architecture
+### Example: Using the Plugin System
 
-ChainForgeLedger follows a modular architecture with clear separation of concerns:
+```javascript
+import { PluginSystem } from 'chainforgeledger';
 
-```
-├── core/              # Blockchain core functionality
-│   ├── block.js       # Block structure and validation
-│   ├── blockchain.js  # Main blockchain management
-│   ├── transaction.js # Transaction management
-│   ├── merkle.js      # Merkle tree implementation
-│   ├── state.js       # World state management
-│   ├── bridge.js      # Cross-chain bridge
-│   ├── caching.js     # Caching layer
-│   ├── difficulty.js  # Difficulty adjustment
-│   ├── fee_distribution.js # Fee distribution
-│   ├── fork.js        # Fork management
-│   ├── lending.js     # Lending protocol
-│   ├── liquidity.js   # Liquidity management
-│   ├── serialization.js # Data serialization
-│   ├── sharding.js    # Sharding support
-│   ├── staking.js     # Staking system
-│   └── state_pruning.js # State pruning
-├── consensus/         # Consensus mechanisms (PoW/PoS)
-│   ├── interface.js   # Consensus interface
-│   ├── pow.js         # Proof of Work
-│   ├── pos.js         # Proof of Stake
-│   ├── slashing.js    # Validator slashing
-│   └── validator.js   # Validator management
-├── crypto/            # Cryptographic operations
-│   ├── hashing.js     # Hashing functions
-│   ├── keys.js        # Key management
-│   ├── signature.js   # Digital signatures
-│   ├── wallet.js      # Wallet system
-│   ├── mnemonic.js    # BIP-39 mnemonics
-│   └── multisig.js    # Multisignature wallets
-├── governance/        # DAO and voting
-│   ├── dao.js         # Decentralized Autonomous Organization
-│   ├── proposal.js    # Governance proposals
-│   └── voting.js      # Voting systems
-├── networking/        # Peer-to-peer network
-│   ├── mempool.js     # Transaction mempool
-│   ├── node.js        # Network node
-│   ├── peer.js        # Peer management
-│   ├── protocol.js    # Communication protocols
-│   └── rate_limiter.js # Rate limiting
-├── smartcontracts/    # Smart contract execution
-│   ├── compiler.js    # Contract compiler
-│   ├── executor.js    # Contract execution
-│   ├── sandbox.js     # Execution sandbox
-│   └── vm.js          # Virtual machine
-├── storage/           # Data storage
-│   ├── database.js    # Database interface
-│   ├── leveldb.js     # LevelDB implementation
-│   └── models.js      # Data models
-├── tokenomics/        # Token economics
-│   ├── tokenomics.js  # Core tokenomics
-│   ├── stablecoin.js  # Stablecoin management
-│   ├── standards.js   # Token standards (ERC-20, ERC-721, ERC-1155)
-│   ├── supply.js      # Supply management
-│   └── treasury.js    # Treasury management
-└── utils/             # Utility functions
-    ├── config.js      # Configuration management
-    ├── logger.js      # Logging system
-    └── crypto.js      # Cryptographic utilities
+const pluginSystem = new PluginSystem();
+
+// Register a custom plugin
+pluginSystem.registerPlugin({
+    id: 'my-plugin',
+    name: 'My Plugin',
+    version: '1.0.0',
+    category: 'custom',
+    description: 'My custom plugin functionality',
+    dependencies: ['core.transaction'],
+    entryPoint: './my-plugin.js',
+    enabled: true
+});
+
+// Load and activate plugin
+const plugin = await pluginSystem.loadPlugin('my-plugin');
+await pluginSystem.startPlugin('my-plugin');
+
+console.log('Plugin active:', pluginSystem.isPluginActive('my-plugin'));
 ```
 
-## Testing
+### Example: Using Finality Manager
 
-Run the comprehensive test suite:
+```javascript
+import { FinalityManager } from 'chainforgeledger';
 
-```bash
-npm test
+const finalityManager = new FinalityManager({
+    validators: [
+        { id: 'v1', address: '0x1', stake: 1000 },
+        { id: 'v2', address: '0x2', stake: 1000 },
+        { id: 'v3', address: '0x3', stake: 1000 },
+        { id: 'v4', address: '0x4', stake: 1000 }
+    ],
+    checkpointInterval: 4
+});
+
+await finalityManager.initialize();
+
+// Record validator votes
+for (const validator of finalityManager.getValidators()) {
+    finalityManager.recordVote({
+        blockNumber: 100,
+        validatorId: validator.id,
+        signature: '0x' + validator.id + 'signature'
+    });
+}
+
+// Check finality
+const status = finalityManager.getStatus();
+console.log('Finality status:', status);
 ```
 
-## Build
+## 🏗️ Architecture Overview
 
-Build the package for distribution:
+### Modular Design
 
-```bash
-npm run build
+ChainForgeLedger's new architecture follows a **modular plugin-based approach** where each functionality is encapsulated in separate plugins:
+
+```
+ChainForgeLedger Framework
+├── Core Plugins
+│   ├── Transaction Processing
+│   ├── Block Management  
+│   ├── Gas Engine
+│   ├── Event System
+│   └── State Machine
+├── Consensus Plugins
+│   ├── PoW/PoS Mechanisms
+│   └── Finality Logic
+├── Storage Plugins
+│   ├── Database Interfaces
+│   └── Caching Systems
+└── Extension Plugins
+    ├── Smart Contracts
+    ├── Token Standards
+    ├── DeFi Protocols
+    └── Custom Features
 ```
 
-## Documentation
+### Component Interfaces
 
-- [API Reference](./docs/api.md)
-- [Architecture Guide](./docs/architecture.md)
-- [Tutorials](./docs/tutorials/)
+Each major component exposes a well-defined interface:
 
-## Contributing
+- **GasEngine**: Manages gas pricing, metering, and limits
+- **EventSystem**: Handles event registration, subscription, and dispatch
+- **StateMachine**: Manages state transitions and versioning
+- **FinalityManager**: Handles chain finality and fork resolution
+- **PluginSystem**: Manages plugin lifecycle and communication
 
-Contributions are welcome! Please read our [Contributing Guide](./CONTRIBUTING.md) for details on how to get started.
+## 🔧 Configuration
 
-## License
+### Gas Engine Configuration
 
-ChainForgeLedger is released under the [MIT License](./LICENSE).
+```javascript
+const gasEngine = new GasEngine({
+    blockGasLimit: 10000000,        // 10 million gas
+    baseGasPrice: 1000000000,       // 1 gwei
+    gasPriceAdjustment: 1.1,        // 10% adjustment per block
+    minGasPrice: 100000000,         // 0.1 gwei
+    maxGasPrice: 100000000000       // 100 gwei
+});
+```
 
-## Author
+### Event System Configuration
 
-**Kanishk Kumar Singh**
+```javascript
+const eventSystem = new EventSystem({
+    maxHistorySize: 10000,          // Store last 10,000 events
+    enableAsyncProcessing: true     // Enable async event handling
+});
+```
 
-- Email: kanishkkumar2004@gmail.com
-- GitHub: [@kanishkkumarsingh2004](https://github.com/kanishkkumarsingh2004)
+### Plugin System Configuration
 
-## Support
+```javascript
+const pluginSystem = new PluginSystem({
+    enableSandboxing: true,         // Enable plugin sandboxing
+    maxMemoryUsage: 100 * 1024 * 1024, // 100MB memory limit per plugin
+    executionTimeout: 30000         // 30 second execution timeout
+});
+```
 
-If you encounter any issues or have questions, please open an issue on the [GitHub repository](https://github.com/kanishkkumarsingh2004/ChainForgeLedger-NPM/issues).
+### Finality Manager Configuration
 
-## Roadmap
+```javascript
+const finalityManager = new FinalityManager({
+    validatorSet: [],               // Initial validators
+    quorumThreshold: 0.67,          // 67% quorum required
+    checkpointInterval: 4,          // Checkpoint every 4 blocks
+    forkChoiceAlgorithm: 'LMD-GHOST' // Fork choice algorithm
+});
+```
 
-### Version 1.1.0
-- [ ] Enhanced smart contract language support
-- [ ] Cross-chain bridge implementation
-- [ ] Sharding for scalability
-- [ ] Enhanced state pruning
+## 📚 Advanced Topics
 
-### Version 1.2.0
-- [ ] Layer 2 solutions (Rollups)
-- [ ] Privacy-preserving transactions
-- [ ] ZK-SNARK integration
-- [ ] Enhanced DeFi protocols
+### Creating Custom Plugins
 
-### Version 2.0.0
-- [ ] Parallel transaction processing
-- [ ] Dynamic consensus switching
-- [ ] Enhanced governance mechanisms
-- [ ] Advanced analytics and monitoring
+```javascript
+import { Plugin } from 'chainforgeledger';
+
+class MyCustomPlugin extends Plugin {
+    constructor(options) {
+        super(options);
+    }
+    
+    async initialize() {
+        console.log('MyCustomPlugin initialized');
+        this.setupEventHandlers();
+    }
+    
+    async start() {
+        console.log('MyCustomPlugin started');
+        this.startBackgroundTasks();
+    }
+    
+    async stop() {
+        console.log('MyCustomPlugin stopped');
+        this.cleanupResources();
+    }
+    
+    async destroy() {
+        console.log('MyCustomPlugin destroyed');
+        this.removeEventHandlers();
+    }
+}
+
+// Usage
+const plugin = new MyCustomPlugin({
+    id: 'my-custom-plugin',
+    name: 'My Custom Plugin',
+    version: '1.0.0',
+    category: 'custom',
+    description: 'Custom plugin functionality'
+});
+```
+
+### Custom State Transitions
+
+```javascript
+import { StateMachine, StateTransitionSystem } from 'chainforgeledger';
+
+const stateMachine = new StateMachine();
+const transitionSystem = new StateTransitionSystem(stateMachine);
+
+// Register custom transition
+transitionSystem.registerTransition('transferFunds', (state, from, to, amount) => {
+    if (!state.accounts[from] || state.accounts[from].balance < amount) {
+        throw new Error('Insufficient funds');
+    }
+    
+    state.accounts[from].balance -= amount;
+    state.accounts[to] = state.accounts[to] || { balance: 0 };
+    state.accounts[to].balance += amount;
+    
+    return true;
+});
+
+// Apply transition
+const result = await transitionSystem.applyTransition('transferFunds', ['0x123', '0x456', 100]);
+console.log('Transfer successful:', result.success);
+```
+
+### Custom Gas Costs
+
+```javascript
+import { GasEngine } from 'chainforgeledger';
+
+const gasEngine = new GasEngine();
+
+// Add custom operation cost
+gasEngine.gasCosts.customOperation = 100;
+
+// Calculate custom operation cost
+const cost = gasEngine.calculateOperationCost('customOperation', {
+    params: 'value'
+});
+```
+
+## 🚀 Performance Features
+
+### Gas Optimization
+
+- **Dynamic gas pricing** adjusts prices based on network congestion
+- **Gas limit adjustment** prevents block stuffing
+- **Efficient metering** reduces overhead with gas cost caches
+
+### Event System Performance
+
+- **Async event processing** offloads heavy operations
+- **Event history pruning** manages memory usage
+- **Efficient filtering** using optimized query patterns
+
+### State Management Performance
+
+- **State versioning** with copy-on-write semantics
+- **Snapshot compression** reduces storage overhead
+- **Lazy loading** of old state versions
+
+### Plugin System Performance
+
+- **Sandbox isolation** prevents resource contention
+- **Dependency resolution** ensures efficient loading
+- **Resource limits** prevent plugin crashes
+
+## 🔒 Security Features
+
+### Gas Engine Security
+
+- **Gas limit enforcement** prevents infinite loops
+- **Gas price minimums** prevent spam attacks
+- **Execution time limits** stop denial-of-service attacks
+
+### Event System Security
+
+- **Event validation** prevents invalid data
+- **Rate limiting** prevents event flooding
+- **Access control** for event subscriptions
+
+### Plugin System Security
+
+- **Sandboxing** prevents plugin escapes
+- **Code signing** verifies plugin authenticity
+- **Resource limits** prevent resource exhaustion
+
+## 📊 Monitoring and Analytics
+
+### Gas Engine Metrics
+
+- Gas price history and volatility
+- Gas usage per transaction and block
+- Congestion level and network health
+
+### Event System Metrics
+
+- Event rates per type
+- Event processing latency
+- Subscription count and activity
+
+### State Machine Metrics
+
+- State version count and size
+- Transition times and成功率
+- Snapshot creation and restore times
+
+### Plugin System Metrics
+
+- Plugin loading and activation times
+- Plugin resource usage
+- Plugin dependency resolution status
+
+## 🔄 Compatibility
+
+ChainForgeLedger's modular architecture ensures compatibility with:
+
+- Existing blockchain implementations
+- Smart contract platforms
+- DeFi protocols
+- Token standards
+- Cross-chain bridges
+
+## 🎯 Roadmap
+
+- [ ] Enhanced consensus mechanisms
+- [ ] Improved plugin sandboxing
+- [ ] Advanced state synchronization
+- [ ] Cross-chain interoperability
+- [ ] WebAssembly smart contracts
+- [ ] Zero-knowledge proof integration
+
+## 📄 License
+
+ChainForgeLedger is open source and available under the MIT License.
+
+## 👥 Contributing
+
+We welcome contributions from the community! Please see our [Contribution Guide](CONTRIBUTING.md) for more information.
+
+## 📞 Support
+
+For questions, issues, or support, please:
+
+1. Check the [GitHub Issues](https://github.com/kanishkkumarsingh2004/ChainForgeLedger-NPM/issues)
+2. Join our [Discord Server](https://discord.gg/chainforgeledger)
+3. Email us at [kanishkkumar2004@gmail.com](mailto:kanishkkumar2004@gmail.com)
+
+---
+
+**ChainForgeLedger - Powering the future of modular blockchain research and development**
