@@ -4,6 +4,8 @@
  * Provides compilation and deployment functionality for smart contracts.
  */
 
+import { getVMContext } from "../runtime/vm_context.js";
+
 export class SmartContractCompiler {
     /**
      * Create a new smart contract compiler instance.
@@ -433,14 +435,16 @@ export class ContractDeployer {
         } catch (error) {
             // If contract not found, return a mock address for testing
             if (error.message.includes('not found')) {
-                return `0x${Math.random().toString(16).substr(2, 40)}`;
+                const context = getVMContext();
+                return `0x${context.getRandom().nextHex(40)}`;
             }
             throw error;
         }
     }
 
     async deploy_contract(contract_name, constructor_args, options = {}) {
-        const deployment_id = `deploy_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        const context = getVMContext();
+        const deployment_id = `deploy_${context.getBlockContext().timestamp}_${context.getRandom().nextHex(9)}`;
         
         const deployment_options = {
             ...this.deployment_options,
@@ -500,7 +504,8 @@ export class ContractDeployer {
     async _execute_deployment(contract_name, constructor_args, options, deployment_id) {
         await new Promise(resolve => setTimeout(resolve, 2000));
 
-        const contract_address = `0x${Math.random().toString(16).substr(2, 40)}`;
+        const context = getVMContext();
+        const contract_address = `0x${context.getRandom().nextHex(40)}`;
         
         this.deployed_contracts.set(contract_address, {
             contract_name,
@@ -508,7 +513,7 @@ export class ContractDeployer {
             deployment_id,
             options,
             constructor_arguments: constructor_args,
-            deployment_time: Date.now(),
+            deployment_time: context.getBlockContext().timestamp,
             status: 'active'
         });
 

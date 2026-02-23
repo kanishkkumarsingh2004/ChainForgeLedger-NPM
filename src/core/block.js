@@ -1,5 +1,6 @@
 import { sha256_hash } from '../crypto/hashing.js';
 import { Transaction } from './transaction.js';
+import { MerkleTree } from './merkle.js';
 
 /**
  * Block and block management
@@ -19,7 +20,39 @@ export class Block {
         this.validator = options.validator || null;
         this.difficulty = options.difficulty || 1;
         this.size = options.size || 0;
+        this.txRoot = options.txRoot || this.calculateTxRoot();
+        this.stateRoot = options.stateRoot || '0'.repeat(64);
+        this.receiptRoot = options.receiptRoot || '0'.repeat(64);
         this.hash = options.hash || this.calculateHash();
+    }
+
+    /**
+     * Calculate transactions Merkle root (txRoot)
+     * @returns {string} Transactions Merkle root
+     */
+    calculateTxRoot() {
+        if (this.transactions.length === 0) {
+            return '0'.repeat(64);
+        }
+        
+        const merkleTree = new MerkleTree(this.transactions.map(tx => tx.toJSON()));
+        return merkleTree.getRoot();
+    }
+
+    /**
+     * Calculate state root (stateRoot)
+     * @returns {string} State Merkle root
+     */
+    calculateStateRoot() {
+        return '0'.repeat(64);
+    }
+
+    /**
+     * Calculate receipts Merkle root (receiptRoot)
+     * @returns {string} Receipts Merkle root
+     */
+    calculateReceiptRoot() {
+        return '0'.repeat(64);
     }
 
     /**
@@ -30,7 +63,9 @@ export class Block {
         const blockData = JSON.stringify({
             index: this.index,
             timestamp: this.timestamp,
-            transactions: this.transactions.map(tx => tx.toJSON()),
+            txRoot: this.txRoot,
+            stateRoot: this.stateRoot,
+            receiptRoot: this.receiptRoot,
             previousHash: this.previousHash,
             nonce: this.nonce,
             validator: this.validator,
@@ -94,6 +129,7 @@ export class Block {
         }
 
         this.transactions.push(transaction);
+        this.txRoot = this.calculateTxRoot();
         this.size = this.calculateSize();
     }
 
@@ -189,6 +225,12 @@ export class Block {
             errors.push(`Invalid transaction ${tx.id}: ${tx.validate().message}`);
         });
 
+        // Validate txRoot
+        const calculatedTxRoot = this.calculateTxRoot();
+        if (this.txRoot !== calculatedTxRoot) {
+            errors.push(`Invalid txRoot: expected ${calculatedTxRoot}, got ${this.txRoot}`);
+        }
+
         // Validate timestamp
         if (previousBlock && this.timestamp <= previousBlock.timestamp) {
             errors.push('Timestamp must be after previous block');
@@ -231,7 +273,10 @@ export class Block {
             nonce: this.nonce,
             validator: this.validator,
             difficulty: this.difficulty,
-            size: this.size
+            size: this.size,
+            txRoot: this.txRoot,
+            stateRoot: this.stateRoot,
+            receiptRoot: this.receiptRoot
         };
     }
 
@@ -249,7 +294,10 @@ export class Block {
             nonce: data.nonce,
             validator: data.validator,
             difficulty: data.difficulty,
-            size: data.size
+            size: data.size,
+            txRoot: data.txRoot,
+            stateRoot: data.stateRoot,
+            receiptRoot: data.receiptRoot
         });
 
         // Convert transactions to Transaction instances

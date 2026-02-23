@@ -30,6 +30,10 @@ import {
     StatePruning,
     ExecutionPipeline,
     BlockProducer,
+    LightClient,
+    createLightClient,
+    verifyBatchProofs,
+    generateMerkleProof,
 
     // Consensus mechanisms
     ProofOfWork,
@@ -840,6 +844,70 @@ async function testUtils() {
 }
 
 /**
+ * Test light client functionality
+ */
+async function testLightClient() {
+    console.log('=== Testing Light Client ===\n');
+
+    try {
+        const lightClient = createLightClient({
+            network: 'testnet',
+            genesisBlock: {
+                index: 0,
+                previousHash: '0'.repeat(64),
+                txRoot: '0'.repeat(64),
+                stateRoot: '0'.repeat(64),
+                receiptRoot: '0'.repeat(64),
+                validator: 'genesis',
+                timestamp: Date.now() - 3600000,
+                hash: '0'.repeat(64)
+            }
+        });
+
+        console.log('✅ LightClient created successfully');
+
+        // Process 3 blocks
+        for (let i = 1; i <= 3; i++) {
+            const previousHeader = lightClient.getBlockHeader(i - 1);
+            const header = {
+                index: i,
+                previousHash: previousHeader.hash,
+                txRoot: 'a'.repeat(64),
+                stateRoot: 'b'.repeat(64),
+                receiptRoot: 'c'.repeat(64),
+                validator: `0x${i}`,
+                timestamp: Date.now() + (i * 60000),
+                nonce: 12345 + i,
+                difficulty: 2,
+                hash: lightClient.calculateBlockHash({
+                    index: i,
+                    previousHash: previousHeader.hash,
+                    txRoot: 'a'.repeat(64),
+                    stateRoot: 'b'.repeat(64),
+                    receiptRoot: 'c'.repeat(64),
+                    validator: `0x${i}`,
+                    timestamp: Date.now() + (i * 60000),
+                    nonce: 12345 + i,
+                    difficulty: 2
+                })
+            };
+            
+            const processResult = lightClient.processBlockHeader(header);
+            console.log(`✅ Block ${i} processed successfully`);
+        }
+
+        const syncResult = lightClient.verifySync();
+        console.log(`✅ Sync verification: ${syncResult.isValid ? 'Valid' : 'Invalid'}`);
+
+        console.log(`✅ Current block height: ${lightClient.getCurrentBlockHeight()}`);
+    } catch (error) {
+        console.error('❌ Light client test failed:', error);
+    }
+
+    console.log('\n=== Light Client Test Complete ===\n');
+}
+
+/**
  * Run all tests
  */
 async function runAllTests() {
@@ -866,6 +934,7 @@ async function runAllTests() {
         testExecutionPipeline();
         testBlockProducer();
         await testUtils();
+        await testLightClient();
 
         console.log('='.repeat(60));
         console.log('🎉 All tests completed successfully!');
@@ -903,7 +972,8 @@ async function runTestsWithReporting() {
         { name: 'Transaction Receipts', fn: testTransactionReceipts },
         { name: 'Execution Pipeline', fn: testExecutionPipeline },
         { name: 'Block Producer', fn: testBlockProducer },
-        { name: 'Utilities', fn: testUtils }
+        { name: 'Utilities', fn: testUtils },
+        { name: 'Light Client', fn: testLightClient }
     ];
 
     const results = [];
@@ -992,6 +1062,7 @@ export {
     testExecutionPipeline,
     testBlockProducer,
     testUtils,
+    testLightClient,
     // Run all tests
     runAllTests,
     runTestsWithReporting

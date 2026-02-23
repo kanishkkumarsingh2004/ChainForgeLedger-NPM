@@ -198,9 +198,101 @@ try {
     console.log(`   Balance of 0x456 for token 1: ${balance456_1}`);
     console.log(`   Batch balances: ${JSON.stringify(balanceBatch)}`);
     
+    // Test transfer functionality
+    console.log('\n   Testing ERC1155 transfer functionality...');
+    const transferResult1 = tokenStandards.erc1155_implementation.safeTransferFrom('0x123', '0x456', 1, 2);
+    console.log(`   safeTransferFrom (2 tokens): ${transferResult1}`);
+    
+    const newBalance123 = tokenStandards.erc1155_implementation.balanceOf('0x123', 1);
+    const newBalance456 = tokenStandards.erc1155_implementation.balanceOf('0x456', 1);
+    console.log(`   New balance 0x123: ${newBalance123}`);
+    console.log(`   New balance 0x456: ${newBalance456}`);
+    
+    // Test batch transfer
+    console.log('\n   Testing ERC1155 batch transfer...');
+    const batchTransferResult = tokenStandards.erc1155_implementation.safeBatchTransferFrom('0x123', '0x789', [1, 2], [3, 2]);
+    console.log(`   safeBatchTransferFrom: ${batchTransferResult}`);
+    
+    const balance789_1 = tokenStandards.erc1155_implementation.balanceOf('0x789', 1);
+    const balance789_2 = tokenStandards.erc1155_implementation.balanceOf('0x789', 2);
+    const finalBalance123_1 = tokenStandards.erc1155_implementation.balanceOf('0x123', 1);
+    const finalBalance123_2 = tokenStandards.erc1155_implementation.balanceOf('0x123', 2);
+    console.log(`   0x789 balance token 1: ${balance789_1}`);
+    console.log(`   0x789 balance token 2: ${balance789_2}`);
+    console.log(`   0x123 final balance token 1: ${finalBalance123_1}`);
+    console.log(`   0x123 final balance token 2: ${finalBalance123_2}`);
+    
+    // Test approval functionality
+    console.log('\n   Testing ERC1155 approval...');
+    const setApprovalResult = tokenStandards.erc1155_implementation.setApprovalForAll('0xabc', true);
+    console.log(`   setApprovalForAll: ${setApprovalResult}`);
+    
+    const isApproved = tokenStandards.erc1155_implementation.isApprovedForAll('0x123', '0xabc');
+    console.log(`   Operator 0xabc approved: ${isApproved}`);
+    
     console.log('✅ ERC1155 functionality working correctly');
 } catch (error) {
     console.error('❌ Failed to test ERC1155 functionality:', error.message);
+    process.exit(1);
+}
+
+// Test 8: Comprehensive contract interface tests
+console.log('\n8️⃣  Testing contract interface definitions...');
+try {
+    const tokenStandards = new TokenStandards();
+    
+    // Create all contract types
+    tokenStandards.create_erc20_contract({
+        name: 'Test Token',
+        symbol: 'TT',
+        total_supply: 1000000
+    });
+    tokenStandards.create_erc721_contract({
+        name: 'Test NFT',
+        symbol: 'TNFT'
+    });
+    tokenStandards.create_erc1155_contract({
+        uri: 'https://api.example.com/tokens/{id}.json'
+    });
+    
+    // Verify all contract interfaces
+    const erc20Interface = tokenStandards.get_token_contract_interface_definition('ERC20');
+    const erc721Interface = tokenStandards.get_token_contract_interface_definition('ERC721');
+    const erc1155Interface = tokenStandards.get_token_contract_interface_definition('ERC1155');
+    
+    console.log('✅ ERC20 interface:', erc20Interface.functions.length, 'functions');
+    console.log('✅ ERC721 interface:', erc721Interface.functions.length, 'functions');
+    console.log('✅ ERC1155 interface:', erc1155Interface.functions.length, 'functions');
+    
+    // Verify key functions exist
+    const erc20Functions = ['totalSupply', 'balanceOf', 'transfer', 'transferFrom', 'approve', 'allowance'];
+    const erc721Functions = ['balanceOf', 'ownerOf', 'safeTransferFrom', 'transferFrom', 'approve', 'getApproved', 'setApprovalForAll', 'isApprovedForAll'];
+    const erc1155Functions = ['balanceOf', 'balanceOfBatch', 'safeTransferFrom', 'safeBatchTransferFrom', 'setApprovalForAll', 'isApprovedForAll'];
+    
+    erc20Functions.forEach(func => {
+        if (!erc20Interface.functions.includes(func)) {
+            console.error(`❌ Missing ERC20 function: ${func}`);
+            process.exit(1);
+        }
+    });
+    
+    erc721Functions.forEach(func => {
+        if (!erc721Interface.functions.includes(func)) {
+            console.error(`❌ Missing ERC721 function: ${func}`);
+            process.exit(1);
+        }
+    });
+    
+    erc1155Functions.forEach(func => {
+        if (!erc1155Interface.functions.includes(func)) {
+            console.error(`❌ Missing ERC1155 function: ${func}`);
+            process.exit(1);
+        }
+    });
+    
+    console.log('✅ All standard functions verified');
+} catch (error) {
+    console.error('❌ Failed to test contract interfaces:', error.message);
     process.exit(1);
 }
 

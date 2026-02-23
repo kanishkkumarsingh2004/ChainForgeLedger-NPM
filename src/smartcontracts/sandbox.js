@@ -4,6 +4,8 @@
  * Provides safe execution environment for smart contracts.
  */
 
+import { getVMContext } from "../runtime/vm_context.js";
+
 export class SmartContractSandbox {
     /**
      * Create a new smart contract sandbox instance.
@@ -199,9 +201,10 @@ export class SmartContractSandbox {
             
             result.success = true;
             result.output = execution_result;
-            result.memory_used = Math.floor(Math.random() * 1024);
-            result.operations_count = Math.floor(Math.random() * 100);
-            result.stack_size = Math.floor(Math.random() * 100);
+            const context = getVMContext();
+            result.memory_used = context.getRandom().nextInt(0, 1024);
+            result.operations_count = context.getRandom().nextInt(0, 100);
+            result.stack_size = context.getRandom().nextInt(0, 100);
 
             if (this.current_sandbox) {
                 const resources = this.current_sandbox.resources_used;
@@ -223,10 +226,10 @@ export class SmartContractSandbox {
      * Internal execution method.
      * @private
      */
-    async _execute_in_sandbox(code, context) {
-        await new Promise(resolve => setTimeout(resolve, 50));
-        
-        const operations_count = Math.floor(Math.random() * 100);
+    async _execute_in_sandbox(code, ctx) {
+        // No async non-deterministic behavior
+        const context = getVMContext();
+        const operations_count = context.getRandom().nextInt(0, 100);
         
         if (operations_count > 80) {
             throw new Error('Operation limit exceeded');

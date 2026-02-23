@@ -4,6 +4,8 @@
  * Provides execution environment for smart contracts.
  */
 
+import { getVMContext } from "../runtime/vm_context.js";
+
 export class SmartContractVM {
     /**
      * Create a new smart contract VM instance.
@@ -137,9 +139,10 @@ export class SmartContractVM {
         };
 
         try {
-            const startTime = Date.now();
+            const context = getVMContext();
+            const startTime = context.getBlockContext().timestamp;
             await this._execute_contract_code(contract_code, context);
-            const executionTime = Date.now() - startTime;
+            const executionTime = context.getBlockContext().timestamp - startTime;
 
             result.success = true;
             result.output = this._get_return_value();
@@ -243,7 +246,8 @@ export class SmartContractVM {
         const result = await this.execute_code(contract_code, context);
         
         if (result.success) {
-            const contract_address = `0x${Math.random().toString(16).substr(2, 40)}`;
+            const context = getVMContext();
+            const contract_address = `0x${context.getRandom().nextHex(40)}`;
             return {
                 ...result,
                 contract_address

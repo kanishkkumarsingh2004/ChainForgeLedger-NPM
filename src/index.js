@@ -37,6 +37,7 @@ import { ForkHandler } from "./core/fork.js";
 import { Serialization } from "./core/serialization.js";
 import { ExecutionPipeline } from "./core/execution_pipeline.js";
 import { BlockProducer } from "./core/block_producer.js";
+import { LightClient, createLightClient, verifyBatchProofs, generateMerkleProof } from "./core/light_client.js";
 
 // Runtime modules
 import { GasEngine, GasPriceOracle, GasLimitCalculator } from "./runtime/gas.js";
@@ -179,6 +180,7 @@ export { StakingManager };
 export { StatePruning };
 export { ExecutionPipeline };
 export { BlockProducer };
+export { LightClient, createLightClient, verifyBatchProofs, generateMerkleProof };
 export { GasEngine, GasPriceOracle, GasLimitCalculator };
 export { EventSystem, EventDispatcher };
 export { StateMachine, InMemoryStateBackend, FileStateBackend, DatabaseStateBackend, StateTransitionSystem, StateValidator };

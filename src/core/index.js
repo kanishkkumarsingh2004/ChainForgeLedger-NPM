@@ -18,3 +18,4 @@ export { ForkHandler } from "./fork.js";
 export { Serialization } from "./serialization.js";
 export { ExecutionPipeline } from "./execution_pipeline.js";
 export { BlockProducer } from "./block_producer.js";
+export { LightClient, createLightClient, verifyBatchProofs, generateMerkleProof } from "./light_client.js";

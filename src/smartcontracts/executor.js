@@ -4,6 +4,8 @@
  * Provides execution functionality for smart contracts.
  */
 
+import { getVMContext } from "../runtime/vm_context.js";
+
 export class SmartContractExecutor {
     /**
      * Create a new smart contract executor instance.
@@ -94,7 +96,7 @@ export class SmartContractExecutor {
         return {
             transaction_hash,
             block_number: this._get_current_block_number(),
-            timestamp: Date.now() / 1000,
+            timestamp: getVMContext().getBlockContext().timestamp,
             contract_name: contract_info.contract_name,
             state: 'active',
             status: 'success',
@@ -477,14 +479,17 @@ export class SmartContractExecutor {
      * @private
      */
     _generate_transaction_hash() {
-        return `${this.transaction_hash_pattern}${Math.random().toString(16).substr(2, 64)}`;
+        // Use VM context for deterministic transaction hash generation
+        const context = getVMContext();
+        return `${this.transaction_hash_pattern}${context.getRandom().nextHex(64)}`;
     }
 
     /**
-     * Get current block number.
+     * Get current block number from VM context.
      * @private
      */
     _get_current_block_number() {
-        return 1000 + Math.floor(Math.random() * 10000);
+        const context = getVMContext();
+        return context.getBlockContext().index;
     }
 }
