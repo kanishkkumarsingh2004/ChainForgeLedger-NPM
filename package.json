@@ -1,12 +1,9 @@
 {
-  "name": "chainforgeledger",
+  "name": "chainforge-ledger",
   "version": "1.0.0",
+  "description": "A modular JavaScript blockchain framework for building custom Layer 1 networks with PoW/PoS, smart contracts, DeFi, governance, tokenomics, and sharding support.",
   "type": "module",
   "main": "src/index.js",
-  "module": "src/index.js",
-  "bin": {
-    "chainforgeledger": "src/__main__.js"
-  },
   "exports": {
     ".": "./src/index.js",
     "./core": "./src/core/index.js",
@@ -21,16 +18,20 @@
     "./governance": "./src/governance/index.js",
     "./api": "./src/api/index.js"
   },
+  "bin": {
+    "chainforge-ledger": "src/__main__.js"
+  },
+  "sideEffects": false,
   "scripts": {
-    "test": "node tests/test-all.js",
-    "test:detailed": "node tests/test-all.js --detailed",
-    "test:receipts": "node tests/receipt-test.js",
-    "test:execution": "node tests/execution-pipeline-test.js",
-    "test:block-producer": "node tests/block-producer-test.js",
-    "test:all": "npm run test"
+    "start": "node src/__main__.js",
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest",
+    "build": "echo \"No build step configured\"",
+    "prepare": "npm run build"
   },
   "keywords": [
     "blockchain",
+    "layer1",
+    "web3",
     "cryptocurrency",
     "smart-contracts",
     "defi",
@@ -42,14 +43,11 @@
     "wallet",
     "tokenomics",
     "dex",
-    "nft",
     "dao",
-    "lending",
-    "liquidity",
-    "staking"
+    "staking",
+    "sharding"
   ],
   "author": "Kanishk Kumar Singh",
-  "email": "kanishkkumar2004@gmail.com",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -59,14 +57,15 @@
     "url": "https://github.com/kanishkkumarsingh2004/ChainForgeLedger-NPM/issues"
   },
   "homepage": "https://github.com/kanishkkumarsingh2004/ChainForgeLedger-NPM#readme",
-  "dependencies": {
-    "winston": "^3.10.0"
+  "engines": {
+    "node": ">=18.0.0"
   },
+  "dependencies": {},
   "devDependencies": {
     "jest": "^29.7.0"
   },
-  "engines": {
-    "node": ">=16.0.0"
+  "overrides": {
+    "minimatch": "^10.2.1"
   },
   "files": [
     "src/",
@@ -75,6 +74,5 @@
   ],
   "publishConfig": {
     "access": "public"
-  },
-  "description": "ChainForgeLedger is a comprehensive blockchain platform library built from scratch with pure JavaScript. It includes: \n- Proof of Work (PoW) and Proof of Stake (PoS) consensus mechanisms\n- Smart contract virtual machine with stack-based execution\n- Decentralized exchange (DEX) with automated market making (AMM)\n- Lending protocol with borrowing and lending functionality\n- NFT marketplace for digital asset creation and trading\n- Blockchain explorer for analytics and visualization\n- Wallet system with various types (CLI, web, mobile, multisig, hardware)\n- Governance system with DAO framework\n- Security architecture with multiple protection mechanisms\n- Tokenomics system with vesting, staking, and reward mechanisms\n- Cross-chain bridge functionality\n- Sharding support for scalability\n- State pruning for storage optimization\n- Caching layer for performance improvements"
+  }
 }
