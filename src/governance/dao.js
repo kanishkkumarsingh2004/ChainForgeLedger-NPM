@@ -150,6 +150,10 @@ export class DAO {
      * @param {string} creator_address - Creator address
      * @param {object} proposal_data - Proposal content
      */
+    submitProposal(proposal) {
+        return this.create_proposal(proposal.creator || proposal.author, proposal);
+    }
+
     create_proposal(creator_address, proposal_data) {
         if (!this.members.has(creator_address)) {
             throw new Error(`Member ${creator_address} not found`);

@@ -321,8 +321,12 @@ export class TransactionPoolManager {
      * @param {object} transaction - Transaction to add
      * @param {number} block_number - Block number
      */
+    addTransaction(transaction, block_number = 0) {
+        return this.transaction_pool.add_transaction(transaction, block_number);
+    }
+
     add_transaction(transaction, block_number = 0) {
-        this.transaction_pool.add_transaction(transaction, block_number);
+        return this.addTransaction(transaction, block_number);
     }
 
     /**
@@ -396,7 +400,11 @@ export class TransactionPoolManager {
      * Get valid transactions.
      * @returns {Array} List of valid transactions
      */
-    get_valid_transactions() {
+    getPendingTransactions() {
         return this.transaction_pool.get_valid_transactions();
+    }
+
+    get_valid_transactions() {
+        return this.getPendingTransactions();
     }
 }

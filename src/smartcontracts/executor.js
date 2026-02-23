@@ -50,6 +50,10 @@ export class SmartContractExecutor {
      * @param {object} options - Execution options
      * @returns {Promise<object>} Execution result
      */
+    async execute(contract_address, action, parameters, options = {}) {
+        return this.execute_action(contract_address, action, parameters, options);
+    }
+
     async execute_action(contract_address, action, parameters, options = {}) {
         const contract = this.contract_storage.get(contract_address);
         

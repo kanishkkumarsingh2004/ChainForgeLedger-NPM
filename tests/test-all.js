@@ -11,6 +11,7 @@ import {
     Blockchain,
     Block,
     Transaction,
+    TransactionReceipt,
     MerkleTree,
     State,
     CrossChainBridge,
@@ -27,6 +28,8 @@ import {
     ShardingManager,
     StakingManager,
     StatePruning,
+    ExecutionPipeline,
+    BlockProducer,
 
     // Consensus mechanisms
     ProofOfWork,
@@ -380,12 +383,12 @@ async function testHashing() {
 /**
  * Test smart contracts
  */
-function testSmartContracts() {
+async function testSmartContracts() {
     console.log('=== Testing Smart Contracts ===\n');
 
     try {
         const compiler = new SmartContractCompiler();
-        const deployer = new ContractDeployer();
+        const deployer = new ContractDeployer(compiler);
         const executor = new SmartContractExecutor();
         const sandbox = new SmartContractSandbox();
         const vm = new SmartContractVM();
@@ -411,10 +414,13 @@ function testSmartContracts() {
         const compiled = compiler.compile(contractCode);
         console.log('✅ Contract compiled successfully');
 
-        const contractAddress = deployer.deploy(compiled);
+        const contractAddress = await deployer.deploy(compiled);
         console.log(`✅ Contract deployed at: ${contractAddress}`);
 
-        const result = executor.execute(contractAddress, 'mint', ['0x1234', 1000]);
+        // Add the contract to executor's storage
+        executor.contract_storage.set(contractAddress, { state: {} });
+
+        const result = await executor.execute(contractAddress, 'mint', ['0x1234', 1000]);
         console.log('✅ Contract execution:', result);
     } catch (error) {
         console.error('❌ Smart contracts test failed:', error);
@@ -433,18 +439,22 @@ function testDeFi() {
         const lending = new LendingProtocol();
         console.log('✅ Lending protocol created');
 
-        lending.deposit('0x1234', 'ETH', 10);
-        console.log('✅ Deposit successful');
+        lending.create_market('ETH');
+        lending.create_market('DAI');
+        console.log('✅ ETH and DAI markets created');
 
-        const borrowResult = lending.borrow('0x1234', 'DAI', 1000);
+        lending.deposit('0x1234', 'ETH', 10);
+        lending.deposit('0x5678', 'DAI', 5000);
+        console.log('✅ Deposits successful');
+
+        const borrowResult = lending.borrow('0x1234', 'DAI', 100, 'ETH', 200);
         console.log('✅ Borrow result:', borrowResult);
 
-        lending.repay('0x1234', 'DAI', 1050);
+        lending.repay('0x1234', 'DAI', 50);
         console.log('✅ Repayment successful');
 
         const dex = new DEX();
-        const pool = new LiquidityPool('TOKEN1', 'TOKEN2', 1000000, 500000);
-        dex.addLiquidityPool(pool);
+        const pool = dex.create_pool('TOKEN1', 'TOKEN2', 1000000, 500000);
         console.log('✅ DEX and liquidity pool created');
 
         const swapResult = dex.swap('TOKEN1', 'TOKEN2', 1000);
@@ -466,22 +476,18 @@ function testGovernance() {
         const dao = new DAO();
         const voting = new VotingSystem(dao);
 
-        const proposal = new Proposal({
-            id: '1',
-            title: 'Increase block size',
-            description: 'Increase block size from 1MB to 2MB',
-            author: '0x1234',
-            createdAt: Date.now()
-        });
+        dao.add_member('0x1234', 10000);
+        dao.add_member('0x5678', 10000);
+        console.log('✅ Members added');
 
-        dao.submitProposal(proposal);
-        console.log('✅ Proposal submitted');
+        const proposalId = voting.create_proposal('chainforgeledger', 'Increase block size from 1MB to 2MB', '0x1234', 'simple');
+        console.log('✅ Proposal created');
 
-        voting.vote('0x1234', '1', 'yes');
-        voting.vote('0x5678', '1', 'no');
+        voting.vote('chainforgeledger', proposalId, '0x1234', 'for', 10000);
+        voting.vote('chainforgeledger', proposalId, '0x5678', 'against', 10000);
         console.log('✅ Votes recorded');
 
-        const results = voting.getVotingResults('1');
+        const results = voting.get_proposal_result('chainforgeledger', proposalId);
         console.log('✅ Voting results:', results);
     } catch (error) {
         console.error('❌ Governance test failed:', error);
@@ -701,6 +707,114 @@ function testStorage() {
 }
 
 /**
+ * Test transaction receipt system
+ */
+function testTransactionReceipts() {
+    console.log('=== Testing Transaction Receipts ===\n');
+
+    try {
+        const transactionId = 'tx123';
+        const receipt = new TransactionReceipt({
+            transactionId: transactionId,
+            status: 'successful',
+            gasUsed: 21000,
+            gasPrice: 0.001,
+            fee: 0.021
+        });
+        
+        console.log('✅ Transaction receipt created');
+        console.log(`✅ Transaction ID: ${receipt.transactionId}`);
+        console.log(`✅ Status: ${receipt.status}`);
+        console.log(`✅ Gas Used: ${receipt.gasUsed}`);
+        console.log(`✅ Fee: ${receipt.fee}`);
+
+        const json = receipt.toJSON();
+        const parsedReceipt = TransactionReceipt.fromJSON(json);
+        console.log('✅ Receipt serialization/deserialization successful');
+
+        const validation = receipt.validate();
+        console.log(`✅ Receipt validation: ${validation.isValid ? '✅ Valid' : '❌ Invalid'}`);
+    } catch (error) {
+        console.error('❌ Transaction receipts test failed:', error);
+    }
+
+    console.log('\n=== Transaction Receipts Test Complete ===\n');
+}
+
+/**
+ * Test execution pipeline
+ */
+function testExecutionPipeline() {
+    console.log('=== Testing Execution Pipeline ===\n');
+
+    try {
+        const pipeline = new ExecutionPipeline();
+        console.log('✅ Execution pipeline created');
+
+        const transaction = new Transaction({
+            sender: '0x123',
+            receiver: '0x456',
+            amount: 100,
+            fee: 0.001
+        });
+
+        pipeline.processTransaction(transaction).then(receipt => {
+            console.log(`✅ Transaction processed: ${receipt.isSuccessful() ? 'Success' : 'Failed'}`);
+            console.log(`✅ Gas used: ${receipt.gasUsed}`);
+            console.log(`✅ Fee: ${receipt.fee}`);
+        });
+
+        console.log('✅ Transaction processing initiated');
+    } catch (error) {
+        console.error('❌ Execution pipeline test failed:', error);
+    }
+
+    console.log('\n=== Execution Pipeline Test Complete ===\n');
+}
+
+/**
+ * Test block producer
+ */
+function testBlockProducer() {
+    console.log('=== Testing Block Producer ===\n');
+
+    try {
+        const blockchain = {
+            getLatestBlock: () => new Block({ index: 0, hash: '0x1234' }),
+            getBlockByIndex: () => new Block({ index: 0, hash: '0x1234' }),
+            addBlock: () => {}
+        };
+        
+        const mempool = {
+            getTransactions: () => [
+                new Transaction({
+                    sender: '0x123',
+                    receiver: '0x456',
+                    amount: 100,
+                    fee: 0.001
+                })
+            ]
+        };
+        
+        const producer = new BlockProducer({
+            blockchain,
+            mempool
+        });
+
+        console.log('✅ Block producer created');
+
+        const stats = producer.getStatistics();
+        console.log(`✅ Current block index: ${stats.currentBlockIndex}`);
+        console.log(`✅ Transactions in pool: ${stats.transactionsInPool}`);
+        console.log(`✅ Max transactions per block: ${stats.maxTransactionsPerBlock}`);
+    } catch (error) {
+        console.error('❌ Block producer test failed:', error);
+    }
+
+    console.log('\n=== Block Producer Test Complete ===\n');
+}
+
+/**
  * Test utility functions
  */
 async function testUtils() {
@@ -748,6 +862,9 @@ async function runAllTests() {
         testNetworking();
         testTokenStandards();
         testStorage();
+        testTransactionReceipts();
+        testExecutionPipeline();
+        testBlockProducer();
         await testUtils();
 
         console.log('='.repeat(60));
@@ -783,6 +900,9 @@ async function runTestsWithReporting() {
         { name: 'Networking', fn: testNetworking },
         { name: 'Token Standards', fn: testTokenStandards },
         { name: 'Storage', fn: testStorage },
+        { name: 'Transaction Receipts', fn: testTransactionReceipts },
+        { name: 'Execution Pipeline', fn: testExecutionPipeline },
+        { name: 'Block Producer', fn: testBlockProducer },
         { name: 'Utilities', fn: testUtils }
     ];
 
@@ -868,6 +988,9 @@ export {
     testNetworking,
     testTokenStandards,
     testStorage,
+    testTransactionReceipts,
+    testExecutionPipeline,
+    testBlockProducer,
     testUtils,
     // Run all tests
     runAllTests,

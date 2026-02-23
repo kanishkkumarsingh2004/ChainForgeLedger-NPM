@@ -21,7 +21,14 @@
     "./governance": "./src/governance/index.js",
     "./api": "./src/api/index.js"
   },
-  "scripts": {},
+  "scripts": {
+    "test": "node tests/test-all.js",
+    "test:detailed": "node tests/test-all.js --detailed",
+    "test:receipts": "node tests/receipt-test.js",
+    "test:execution": "node tests/execution-pipeline-test.js",
+    "test:block-producer": "node tests/block-producer-test.js",
+    "test:all": "npm run test"
+  },
   "keywords": [
     "blockchain",
     "cryptocurrency",

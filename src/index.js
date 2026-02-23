@@ -27,6 +27,7 @@
 import { Block } from "./core/block.js";
 import { Blockchain } from "./core/blockchain.js";
 import { Transaction } from "./core/transaction.js";
+import { TransactionReceipt } from "./core/receipt.js";
 import { MerkleTree } from "./core/merkle.js";
 import { State } from "./core/state.js";
 import { CrossChainBridge, BridgeNetwork } from "./core/bridge.js";
@@ -34,6 +35,8 @@ import { BlockchainCache } from "./core/caching.js";
 import { DifficultyAdjuster } from "./core/difficulty.js";
 import { ForkHandler } from "./core/fork.js";
 import { Serialization } from "./core/serialization.js";
+import { ExecutionPipeline } from "./core/execution_pipeline.js";
+import { BlockProducer } from "./core/block_producer.js";
 
 // Runtime modules
 import { GasEngine, GasPriceOracle, GasLimitCalculator } from "./runtime/gas.js";
@@ -160,6 +163,7 @@ const description = "A complete blockchain platform library with PoW/PoS consens
 export { Block };
 export { Blockchain };
 export { Transaction };
+export { TransactionReceipt };
 export { MerkleTree };
 export { State };
 export { CrossChainBridge, BridgeNetwork };
@@ -173,6 +177,8 @@ export { Serialization };
 export { Shard, ShardingManager };
 export { StakingManager };
 export { StatePruning };
+export { ExecutionPipeline };
+export { BlockProducer };
 export { GasEngine, GasPriceOracle, GasLimitCalculator };
 export { EventSystem, EventDispatcher };
 export { StateMachine, InMemoryStateBackend, FileStateBackend, DatabaseStateBackend, StateTransitionSystem, StateValidator };
@@ -298,6 +304,7 @@ export default {
     Block: Block,
     Blockchain: Blockchain,
     Transaction: Transaction,
+    TransactionReceipt: TransactionReceipt,
     MerkleTree: MerkleTree,
     State: State,
     CrossChainBridge: CrossChainBridge,
@@ -310,6 +317,8 @@ export default {
     LiquidityPool: LiquidityPool,
     DEX: DEX,
     Serialization: Serialization,
+    ExecutionPipeline: ExecutionPipeline,
+    BlockProducer: BlockProducer,
     Shard: Shard,
     ShardingManager: ShardingManager,
     StakingManager: StakingManager,

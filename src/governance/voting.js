@@ -25,7 +25,8 @@ export class VotingSystem {
             proposal_threshold: 10000,
             voting_methods: ['for', 'against', 'abstain'],
             vote_strategies: ['simple', 'weighted'],
-            proposal_count: 0
+            proposal_count: 0,
+            proposals: new Map()
         });
     }
 
@@ -131,6 +132,10 @@ export class VotingSystem {
      * @param {number} voting_power - Voting power
      * @returns {object} Vote result
      */
+    vote(system, proposal_id, address, vote_method, voting_power = 1) {
+        return this.cast_vote(system, proposal_id, address, vote_method, voting_power);
+    }
+
     cast_vote(system, proposal_id, address, vote_method, voting_power) {
         const config = this._get_system_config(system);
         const proposal = config.proposals.get(proposal_id);

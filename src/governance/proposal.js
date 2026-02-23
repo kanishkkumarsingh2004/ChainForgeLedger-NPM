@@ -14,7 +14,7 @@ export class Proposal {
         this.id = data.id || `prop_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
         this.title = data.title || 'Untitled Proposal';
         this.description = data.description || '';
-        this.creator = data.creator || null;
+        this.creator = data.creator || data.author || null;
         this.status = data.status || 'active';
         this.created_at = data.created_at || new Date();
         this.vote_start_time = data.vote_start_time || null;

@@ -39,6 +39,10 @@ export class LendingProtocol {
         return this.markets.get(asset);
     }
 
+    deposit(user, asset, amount) {
+        return this.add_liquidity(user, asset, amount);
+    }
+
     add_liquidity(user, asset, amount) {
         if (!this.markets.has(asset)) {
             throw new Error(`Market for ${asset} does not exist`);
