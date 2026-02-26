@@ -674,17 +674,12 @@ ChainForgeLedger's modular architecture ensures compatibility with:
 
 ChainForgeLedger is open source and available under the MIT License.
 
-## 👥 Contributing
-
-We welcome contributions from the community! Please see our [Contribution Guide](CONTRIBUTING.md) for more information.
-
 ## 📞 Support
 
 For questions, issues, or support, please:
 
 1. Check the [GitHub Issues](https://github.com/kanishkkumarsingh2004/ChainForgeLedger-NPM/issues)
-2. Join our [Discord Server](https://discord.gg/chainforgeledger)
-3. Email us at [kanishkkumar2004@gmail.com](mailto:kanishkkumar2004@gmail.com)
+2. Email us at [kanishkkumar2004@gmail.com](mailto:kanishkkumar2004@gmail.com)
 
 ---
 
